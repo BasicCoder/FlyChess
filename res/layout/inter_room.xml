@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layout"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:background="@drawable/part3" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:background="@drawable/part1" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/part2" 
+            android:text="房间内部"
+            android:textSize="20dp"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:orientation="horizontal" >
+
+        <ListView
+            android:id="@+id/names"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_weight="4" />
+
+        <LinearLayout
+            android:id="@+id/fill"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/blank"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_bt"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="bottom"
+                    android:text="开始游戏" />
+
+                <Button
+                    android:id="@+id/exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_bt"
+                    android:gravity="bottom"
+                    android:text="退出房间" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

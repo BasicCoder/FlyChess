@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/nameofroom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="0.21"
+        android:hint="请输入房间名"
+        android:singleLine = "true"
+        android:maxLines="1"
+        android:minLines="1"
+        android:textSize="15dp" />
+
+    <Spinner 
+    	android:layout_width="match_parent"
+    	android:layout_height="0dp"
+    	android:layout_weight="1"
+    	android:id="@+id/numbersel"
+    	android:entries="@array/numroom"
+    	android:layout_centerHorizontal="true"
+    	/>
+
+</LinearLayout>
