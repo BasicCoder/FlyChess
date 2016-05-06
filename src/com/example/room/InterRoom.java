@@ -349,7 +349,8 @@ public class InterRoom extends Activity {
 				}
 			}
 			else{
-				Log.e("AsyncTask", "这TM就尴尬了");			
+				Log.e("AsyncTask", "这TM就尴尬了");	
+					
 			}
 			
 			
