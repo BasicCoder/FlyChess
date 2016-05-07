@@ -221,7 +221,7 @@ public class InterRoom extends Activity {
 
 		Log.e("Thread","CreateNewThread");
 		stop = false;
-		new ReceiveSendThread().execute(dstName, Integer.toString(dstPort), "test", "test", "1");
+		new ReceiveSendThread().execute(dstName, Integer.toString(dstPort), "13349076", roomData.getRoomId(), roomData.getRoomStyle().substring(0,1));
 		Log.e("Thread", "StartUp");
 		
 	}
@@ -252,6 +252,8 @@ public class InterRoom extends Activity {
 			RoomId = params[3];
 			RoomStyle = Integer.parseInt(params[4]);
 
+			ApplicationUtil appUtil = (ApplicationUtil)InterRoom.this.getApplication();
+
 			Log.e("dstName", dstName);
 			Log.e("dstPort", params[1]);
 			Log.e("NameId", NameId);
@@ -260,8 +262,13 @@ public class InterRoom extends Activity {
 			
 			try{
 				Log.e("AsyncTask","CreateSocket");
-				clientSocket = new Socket(dstName, dstPort);
+				//clientSocket = new Socket(dstName, dstPort);
+
+				appUtil.init();
+				clientSocket = appUtil.getSocket();
+				
 				//clientSocket.setSoTimeout(timeout);
+
 				Log.e("AsyncTask", "CreateSocketOver");
 			}
 			catch(SocketTimeoutException e){
@@ -273,22 +280,30 @@ public class InterRoom extends Activity {
 			catch(IOException e){
 				e.printStackTrace();
 			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			
 			if(clientSocket != null)
 			{
 				SocketConnStatus = clientSocket.isConnected();
 				try{
 					Log.e("AsyncTask", "getInputStream");
-					inStream = clientSocket.getInputStream();
-					outStream = clientSocket.getOutputStream();
+					//inStream = clientSocket.getInputStream();
+					//outStream = clientSocket.getOutputStream();
+
+					inStream = appUtil.getDis();
+					outStream = appUtil.getDos();
+
 					in = new BufferedReader(new InputStreamReader(inStream));
 					out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outStream)), true);
 					Log.e("AsyncTask", "getInputStreamEnd");
-				}catch(IOException e){
+				}catch(Exception e){
 					e.printStackTrace();
 				}
 
 				while(!stop){
+					//接受数据
 					buf = new byte[512];
 					try{
 						Log.e("inStream", "readBuf");

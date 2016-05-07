@@ -133,7 +133,7 @@ public class RoomActivity extends Activity {
 		}
 	}
 	
-	//点击创建房间
+	//Button点击创建房间
 	private AlertDialog alert = null;
 	private AlertDialog.Builder builder = null;
 	private EditText RoomName;
@@ -253,7 +253,7 @@ public class RoomActivity extends Activity {
 		mQueue.add(CreateRoomRequest);
 	}
 	
-	//点击加入房间信息
+	//Button点击加入房间信息
 	public void joinRoom(View sourse){
 		Intent intent = new Intent();
 		intent.setClass(RoomActivity.this, InterRoom.class);

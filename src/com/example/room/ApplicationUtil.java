@@ -1,18 +1,23 @@
 package com.example.room;
 
 import android.app.Application;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
 public class ApplicationUtil extends Application{
-	public static final String ADDRESS = "192.168.1.163";
-    public static final int PORT = 4869;
+	public static final String ADDRESS = "172.18.40.26";
+    public static final int PORT = 8888;
 
     private Socket socket;
-    private DataOutputStream dos = null;
-    private DataInputStream dis = null;
+    private OutputStream dos = null;
+    private InputStream dis = null;
 
 
     public void init() throws IOException, Exception {
@@ -22,8 +27,8 @@ public class ApplicationUtil extends Application{
                 //与服务器建立连接
                 try {
                     socket = new Socket(ADDRESS, PORT);
-                    dos = new DataOutputStream(socket.getOutputStream());
-                    dis = new DataInputStream(socket.getInputStream());
+                    dos = socket.getOutputStream();
+                    dis = socket.getInputStream();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -41,19 +46,19 @@ public class ApplicationUtil extends Application{
         this.socket = socket;
     }
 
-    public DataOutputStream getDos() {
+    public OutputStream getDos() {
         return dos;
     }
 
-    public void setDos(DataOutputStream dos) {
+    public void setDos(OutputStream dos) {
         this.dos = dos;
     }
 
-    public DataInputStream getDis() {
+    public InputStream getDis() {
         return dis;
     }
 
-    public void setDis(DataInputStream dis) {
+    public void setDis(InputStream dis) {
         this.dis = dis;
     }
 }
