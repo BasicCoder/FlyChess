@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ApplicationUtil extends Application{
-	public static final String ADDRESS = "172.18.40.26";
-    public static final int PORT = 8888;
+	public static final String ADDRESS = "172.19.48.102";
+    public static final int PORT = 8899;
 
     private Socket socket;
     private OutputStream dos = null;

@@ -329,7 +329,7 @@ public class InterRoom extends Activity {
 					//第一次进入房间就发送消息
 					if(sendSwitch == 1)
 					{
-						String tmp = "EnterRoom"+RoomId + NameId;
+						String tmp = "EnterRoom:" + RoomId + ","+ NameId;
 						try{
 							buf = tmp.getBytes("UTF-8");
 						}catch(UnsupportedEncodingException e){
@@ -346,7 +346,7 @@ public class InterRoom extends Activity {
 					//离开房间发送消息
 					if(sendSwitch == 2){
 						Log.e("AsyncTask","SendLeaveRoomStart");
-						String tmp = "ExitRoom"+RoomId + NameId;
+						String tmp = "ExitRoom:" + RoomId + ","+ NameId;
 						
 						try{
 							buf = tmp.getBytes("UTF-8");

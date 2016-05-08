@@ -50,7 +50,7 @@ public class RoomActivity extends Activity {
 	
 	private RequestQueue mQueue = null;
 	
-	private String dstName = "172.18.40.26";
+	private String dstName = "172.19.48.102";
 	private int dstPort = 8080;
 	
 	@Override
