@@ -59,7 +59,7 @@ import android.widget.Toast;
 import com.example.room.GameView;
 
 public class InterRoom extends Activity {
-	private String[] names0 = new String[]{"ÕÅÈý·á","Ãð¾øÊ¦Ì«","¿Õ¼û","ÔÀ²»Èº"};
+	
 	private List<SinglePlayer> mData = null;
 	private Context mContext;
 	private SinglePlayerAdapter mAdapter = null;
@@ -70,7 +70,7 @@ public class InterRoom extends Activity {
 	private RequestQueue mQueue = null;
 	private OkHttpClient client = new OkHttpClient();
 	
-	private String dstName = "172.18.40.26";
+	private String dstName = "172.19.54.9";
 	private int dstPort = 8888;
 	
 	private Timer timer = new Timer();
@@ -97,11 +97,11 @@ public class InterRoom extends Activity {
 		
 		mData = new LinkedList<SinglePlayer>();
 			
-		//µÃIntentÖÐµÄBundle¶ÔÏó
+		//脗碌脙茠Intent脙鈥撁兟惷偮得冣�濨undle脗露脙鈥澝兟徝兟�
 		Bundle bundle = this.getIntent().getExtras();
-		//È¡µÃBundle¶ÔÏóÖÐµÄÊý¾Ý 
+		//脙藛脗隆脗碌脙茠Bundle脗露脙鈥澝兟徝兟趁冣�撁兟惷偮得冣�灻兣犆兟矫偮久兟� 
 		StringArray = bundle.getStringArray("roominfo");
-		//mData.add(new SinglePlayer(StringArray[1]));//Ìí¼Ó·¿Ö÷£¬·¿Ö÷Êý¾Ý²»ÄÜÎª¿Õ
+		//mData.add(new SinglePlayer(StringArray[1]));//脙艗脙颅脗录脙鈥溍偮访偮棵冣�撁兟访偮Ｃ偮偮访偮棵冣�撁兟访兣犆兟矫偮久兟澝偮裁偮幻冣�灻兣撁兣矫偮偮棵冣��
 		roomData = new SingleRoom(StringArray[0], 
 								StringArray[1], 
 								StringArray[2],
@@ -116,7 +116,7 @@ public class InterRoom extends Activity {
 			{
 				
 				if(!mData.contains(new SinglePlayer(StringArray[i]))){
-					mData.add(new SinglePlayer(StringArray[i])); // Èç¹ûÍæ¼ÒÃû×Ö²»Îª¿ÕÇÒÎ´Ìí¼Óµ½Êý¾ÝÖÐ£¬ÔòÌí¼ÓÍæ¼ÒÃû×Ö
+					mData.add(new SinglePlayer(StringArray[i])); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
 				}		
 			}
 		}
@@ -134,7 +134,7 @@ public class InterRoom extends Activity {
 			}
 		};
 		
-		//¼ÆÊýÆ÷¶¨Ê±Ìø×ªµ½ÓÎÏ·½çÃæ
+		//脗录脙鈥犆兣犆兟矫冣�犆兟访偮睹偮兣犆偮泵兣捗兟该冣�斆偮偮得偮矫冣�溍兣矫兟徝偮访偮矫兟兤捗兟�
 		mHandler = new Handler(){
 			private int count = 10;
 			@Override
@@ -197,7 +197,7 @@ public class InterRoom extends Activity {
 								String[] rowData = row[i].split(",");
 								SinglePlayer player = new SinglePlayer( rowData[0] );
 								if(!mData.contains( player )){
-									mData.add( player ); // Èç¹ûÍæ¼ÒÃû×Ö²»Îª¿ÕÇÒÎ´Ìí¼Óµ½Êý¾ÝÖÐ£¬ÔòÌí¼ÓÍæ¼ÒÃû×Ö
+									mData.add( player ); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
 								}		
 							}
 						}
@@ -343,10 +343,10 @@ public class InterRoom extends Activity {
 		        }).start();
 				
 				while(!stop){
-					//½ÓÊÜÊý¾Ý
+					//脗陆脙鈥溍兣犆兣撁兣犆兟矫偮久兟�
 					buf = new byte[512];
 
-					//��һ�ν��뷿��ͷ�����Ϣ
+					//碌脷脪禄麓脦陆酶脠毛路驴录盲戮脥路垄脣脥脧没脧垄
 					if(sendSwitch == 1)
 					{
 						byte[] Enterbuf = new byte[512];
@@ -393,7 +393,7 @@ public class InterRoom extends Activity {
 				}
 			}
 			else{
-				Log.e("AsyncTask", "��TM��������");	
+				Log.e("AsyncTask", "TM explosion");	
 					
 			}
 			
@@ -410,19 +410,29 @@ public class InterRoom extends Activity {
 		protected void onProgressUpdate(String... values){
 			String response = values[0];
 			if(!response.equals("Failed")){
-				String[] row = response.split(";");
-				for(int i = 0; i < row.length; i++)
-				{
-					String[] rowData = row[i].split(",");
-					if(rowData[0] != null){
-						SinglePlayer player = new SinglePlayer( rowData[0] );
+
+				String[] row = response.split(":");
+				if(row[0].equals("Join")){
+					if(row[1] != null){
+						Log.e("AsyncTask_Join", row[1]);
+						SinglePlayer player = new SinglePlayer( row[1] );
 						if(!mData.contains( player )){
-							mData.add( player ); // Èç¹ûÍæ¼ÒÃû×Ö²»Îª¿ÕÇÒÎ´Ìí¼Óµ½Êý¾ÝÖÐ£¬ÔòÌí¼ÓÍæ¼ÒÃû×Ö
+							mData.add( player ); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
 						}
-					}				
-							
+					}
 				}
+
+				if(row[0].equals("Leave")){
+					if(row[1] != null){
+						Log.e("AysncTask_Leave", row[1]);
+						SinglePlayer player = new SinglePlayer( row[1] );
+						if(mData.contains( player )){
+							mData.remove( player );
+						}
+					}
+				}			
 			}
+
 		}
 
 		@Override
@@ -430,7 +440,7 @@ public class InterRoom extends Activity {
 			super.onPostExecute(result);
 			Log.e("AsyncTask", "setFullRoom");
 			
-			//��release�汾��ע�͵�
+			//脭脷release掳忙卤戮脰脨脳垄脢脥碌么
 			//fullRoom = true;
 			
 			if(SocketConnStatus){
@@ -516,7 +526,7 @@ public class InterRoom extends Activity {
 	@Override
 	protected void onResume() {
 	 /**
-	  * ÉèÖÃÎªºáÆÁ
+	  * 脙鈥懊兟冣�撁兤捗兣矫偮偮好兟∶冣�犆兟�
 	  */
 	 if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
 	  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

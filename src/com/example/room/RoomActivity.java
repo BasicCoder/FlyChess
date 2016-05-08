@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
+import com.android.volley.Request.Priority;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -49,8 +50,9 @@ public class RoomActivity extends Activity {
 	private int mClickPosition = 0;
 	
 	private RequestQueue mQueue = null;
+	private RequestQueue mCreateRoomQueue = null;
 	
-	private String dstName = "172.19.48.102";
+	private String dstName = "172.19.54.9";
 	private int dstPort = 8080;
 	
 	@Override
@@ -63,6 +65,7 @@ public class RoomActivity extends Activity {
 		rooms = (ListView) findViewById(R.id.rooms);
 		
 		mQueue = Volley.newRequestQueue(mContext);
+		mCreateRoomQueue = Volley.newRequestQueue(mContext);
 		
 		mData = new LinkedList<SingleRoom>();
 		getRoomData();
@@ -139,7 +142,7 @@ public class RoomActivity extends Activity {
 	private EditText RoomName;
 	private Spinner Spin_RoomStyle;
 	private String StyleOfRoom = new String("4人局");
-	private String CreateRoomId;
+	private String CreateRoomId = new String();
 	public void createRoom(View sourse){
 		LayoutInflater inflater = RoomActivity.this.getLayoutInflater();
 		View RegisterRoom = inflater.inflate(R.layout.select_list, null, false);
@@ -179,11 +182,20 @@ public class RoomActivity extends Activity {
 						
 						
 						sendCreateRoomInfo(NameOfRoom, StyleOfRoom, "13349076");
+
+						/*while(CreateRoomId.isEmpty()){
+
+						}*/
+
+						//Log.e("ReceivedRoomId", CreateRoomId);
 						
 						String[] StringArray = new String[]{CreateRoomId,
 															NameOfRoom,
 															StyleOfRoom,
 															"13349076",
+															new String(),
+															new String(),
+															new String()
 															};
 						Bundle bundle = new Bundle();
 						bundle.putStringArray("roominfo", StringArray);
@@ -239,18 +251,25 @@ public class RoomActivity extends Activity {
 				new Response.Listener<String>(){
 					@Override
 					public void onResponse(String response){
-						Log.d("TAG", response);
+						Log.e("SendCreatRoom1", response);
 						CreateRoomId = response;
+						Log.e("SendCreatRoom2", CreateRoomId);
 					}
 				},new Response.ErrorListener(){
 					@Override
 					public void onErrorResponse(VolleyError error){
 						Log.e("TAG", error.getMessage(), error);
 					}
-				});
+				}){
+					@Override
+					public Priority getPriority(){
+						Priority priority = Priority.IMMEDIATE;
+						return priority;
+					}
+				};
 
 		
-		mQueue.add(CreateRoomRequest);
+				mCreateRoomQueue.add(CreateRoomRequest);
 	}
 	
 	//Button点击加入房间信息
