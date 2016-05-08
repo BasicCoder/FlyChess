@@ -98,7 +98,7 @@ public class RoomActivity extends Activity {
 				new Response.Listener<String>(){
 					@Override
 					public void onResponse(String response){
-						Log.d("TAG", response);
+						Log.d("GetRoomData", response);
 						if(!response.equals("Failed")){
 							String[] row = response.split(";");
 							for(int i = 0; i < row.length; i++)

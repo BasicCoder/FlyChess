@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -58,7 +59,7 @@ import android.widget.Toast;
 import com.example.room.GameView;
 
 public class InterRoom extends Activity {
-	private String[] names0 = new String[]{"张三丰","灭绝师太","空见","岳不群"};
+	private String[] names0 = new String[]{"脮脜脠媒路谩","脙冒戮酶脢娄脤芦","驴脮录没","脭脌虏禄脠潞"};
 	private List<SinglePlayer> mData = null;
 	private Context mContext;
 	private SinglePlayerAdapter mAdapter = null;
@@ -96,11 +97,11 @@ public class InterRoom extends Activity {
 		
 		mData = new LinkedList<SinglePlayer>();
 			
-		//得Intent中的Bundle对象
+		//碌脙Intent脰脨碌脛Bundle露脭脧贸
 		Bundle bundle = this.getIntent().getExtras();
-		//取得Bundle对象中的数据 
+		//脠隆碌脙Bundle露脭脧贸脰脨碌脛脢媒戮脻 
 		StringArray = bundle.getStringArray("roominfo");
-		//mData.add(new SinglePlayer(StringArray[1]));//添加房主，房主数据不能为空
+		//mData.add(new SinglePlayer(StringArray[1]));//脤铆录脫路驴脰梅拢卢路驴脰梅脢媒戮脻虏禄脛脺脦陋驴脮
 		roomData = new SingleRoom(StringArray[0], 
 								StringArray[1], 
 								StringArray[2],
@@ -115,7 +116,7 @@ public class InterRoom extends Activity {
 			{
 				
 				if(!mData.contains(new SinglePlayer(StringArray[i]))){
-					mData.add(new SinglePlayer(StringArray[i])); // 如果玩家名字不为空且未添加到数据中，则添加玩家名字
+					mData.add(new SinglePlayer(StringArray[i])); // 脠莽鹿没脥忙录脪脙没脳脰虏禄脦陋驴脮脟脪脦麓脤铆录脫碌陆脢媒戮脻脰脨拢卢脭貌脤铆录脫脥忙录脪脙没脳脰
 				}		
 			}
 		}
@@ -124,7 +125,7 @@ public class InterRoom extends Activity {
 		timertask = new TimerTask(){
 			@Override
 			public void run(){
-				Log.e("Timetask", String.valueOf(fullRoom));
+				//Log.e("Timetask", String.valueOf(fullRoom));
 				if(fullRoom){
 					Message message = new Message();
 					message.what = 1;
@@ -133,7 +134,7 @@ public class InterRoom extends Activity {
 			}
 		};
 		
-		//计数器定时跳转到游戏界面
+		//录脝脢媒脝梅露篓脢卤脤酶脳陋碌陆脫脦脧路陆莽脙忙
 		mHandler = new Handler(){
 			private int count = 10;
 			@Override
@@ -196,7 +197,7 @@ public class InterRoom extends Activity {
 								String[] rowData = row[i].split(",");
 								SinglePlayer player = new SinglePlayer( rowData[0] );
 								if(!mData.contains( player )){
-									mData.add( player ); // 如果玩家名字不为空且未添加到数据中，则添加玩家名字
+									mData.add( player ); // 脠莽鹿没脥忙录脪脙没脳脰虏禄脦陋驴脮脟脪脦麓脤铆录脫碌陆脢媒戮脻脰脨拢卢脭貌脤铆录脫脥忙录脪脙没脳脰
 								}		
 							}
 						}
@@ -217,6 +218,7 @@ public class InterRoom extends Activity {
 	//private ReceiveThread mReceiveThread = null;
 	private boolean stop = true;
 	private int sendSwitch = 1;
+
 	private void getPlayerInfo1(String dstName, int dstPort){
 
 		Log.e("Thread","CreateNewThread");
@@ -231,7 +233,7 @@ public class InterRoom extends Activity {
 		private boolean SocketConnStatus = false;
 		private String dstName = null;
 		private int dstPort;
-		private int timeout = 10000;
+		private int timeout = 30000;
 		private String NameId = null;
 		private String RoomId = null;
 		private int RoomStyle;
@@ -265,6 +267,13 @@ public class InterRoom extends Activity {
 				//clientSocket = new Socket(dstName, dstPort);
 
 				appUtil.init();
+				
+				try {
+        			Thread.sleep(timeout);        
+    			} catch (InterruptedException e) {
+       				e.printStackTrace();
+   				}
+
 				clientSocket = appUtil.getSocket();
 				
 				//clientSocket.setSoTimeout(timeout);
@@ -301,9 +310,65 @@ public class InterRoom extends Activity {
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-
+				
+				new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+		            	
+		            	while(true){
+		            		if(sendSwitch == 2){
+		            			byte[] Exitbuf = new byte[512];
+		            			Log.e("ExitRoomThread","SendLeaveRoomStart");
+								String tmp = "ExitRoom:" + RoomId + ","+ NameId;
+								
+								try{
+									Exitbuf = tmp.getBytes("UTF-8");
+								}catch(UnsupportedEncodingException e){
+									e.printStackTrace();
+								}
+								try{
+									outStream.write(Exitbuf);
+									outStream.flush();
+									Log.e("sendExitRoom", tmp);
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								sendSwitch = 0;
+		            		}
+		            		
+		            	}
+		                //
+		                
+		            }
+		        }).start();
+				
 				while(!stop){
-					//接受数据
+					//陆脫脢脺脢媒戮脻
+					buf = new byte[512];
+
+					//第一次进入房间就发送消息
+					if(sendSwitch == 1)
+					{
+						byte[] Enterbuf = new byte[512];
+						Log.e("AsyncTask", "SendEnterRoomStart");
+						String tmp = "EnterRoom:" + RoomId + ","+ NameId;
+
+						try{
+							 Enterbuf = tmp.getBytes("UTF-8");
+						}catch(UnsupportedEncodingException e){
+							e.printStackTrace();
+						}
+						try{
+							outStream.write(Enterbuf);
+							outStream.flush();
+							Log.e("sendEnterRoom", tmp);
+						}catch(IOException e){
+							e.printStackTrace();
+						}
+						
+						sendSwitch = 0;
+					}
+					
 					buf = new byte[512];
 					try{
 						Log.e("inStream", "readBuf");
@@ -314,7 +379,7 @@ public class InterRoom extends Activity {
 					
 					try{
 						Log.e("str", "CreateStr");
-						str = new String(this.buf, "GB2312").trim();
+						str = new String(this.buf, "UTF-8").trim();
 						Log.e("AsyncTask", str);
 					}catch(UnsupportedEncodingException e){
 						e.printStackTrace();
@@ -323,43 +388,7 @@ public class InterRoom extends Activity {
 					{
 						Log.e("publish", str);
 						publishProgress(str);
-					}
-
-
-					//第一次进入房间就发送消息
-					if(sendSwitch == 1)
-					{
-						String tmp = "EnterRoom:" + RoomId + ","+ NameId;
-						try{
-							buf = tmp.getBytes("UTF-8");
-						}catch(UnsupportedEncodingException e){
-							e.printStackTrace();
-						}
-						try{
-							outStream.write(buf);
-						}catch(IOException e){
-							e.printStackTrace();
-						}
-						
-						sendSwitch = 0;
-					}
-					//离开房间发送消息
-					if(sendSwitch == 2){
-						Log.e("AsyncTask","SendLeaveRoomStart");
-						String tmp = "ExitRoom:" + RoomId + ","+ NameId;
-						
-						try{
-							buf = tmp.getBytes("UTF-8");
-						}catch(UnsupportedEncodingException e){
-							e.printStackTrace();
-						}
-						try{
-							outStream.write(buf);
-						}catch(IOException e){
-							e.printStackTrace();
-						}
-						
-					}		
+					}				
 					
 				}
 			}
@@ -388,7 +417,7 @@ public class InterRoom extends Activity {
 					if(rowData[0] != null){
 						SinglePlayer player = new SinglePlayer( rowData[0] );
 						if(!mData.contains( player )){
-							mData.add( player ); // 如果玩家名字不为空且未添加到数据中，则添加玩家名字
+							mData.add( player ); // 脠莽鹿没脥忙录脪脙没脳脰虏禄脦陋驴脮脟脪脦麓脤铆录脫碌陆脢媒戮脻脰脨拢卢脭貌脤铆录脫脥忙录脪脙没脳脰
 						}
 					}				
 							
@@ -401,8 +430,8 @@ public class InterRoom extends Activity {
 			super.onPostExecute(result);
 			Log.e("AsyncTask", "setFullRoom");
 			
-			//测试跳转，release版注释掉
-			fullRoom = true;
+			//在release版本中注释掉
+			//fullRoom = true;
 			
 			if(SocketConnStatus){
 				fullRoom = true;
@@ -427,7 +456,7 @@ public class InterRoom extends Activity {
 				InterRoom.this.startActivity(GameViewintent);
 				break;
 			case R.id.exit:
-				sendLeaveRoomInfo(roomData.getRoomId(), "13349076");
+				//sendLeaveRoomInfo(roomData.getRoomId(), "13349076");
 				sendSwitch = 2;
 				Intent RoomListintent = new Intent();
 				RoomListintent.setClass(InterRoom.this, RoomActivity.class);
@@ -487,7 +516,7 @@ public class InterRoom extends Activity {
 	@Override
 	protected void onResume() {
 	 /**
-	  * 设置为横屏
+	  * 脡猫脰脙脦陋潞谩脝脕
 	  */
 	 if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
 	  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

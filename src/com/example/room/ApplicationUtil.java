@@ -9,12 +9,13 @@ import java.io.PrintWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ApplicationUtil extends Application{
 	public static final String ADDRESS = "172.19.48.102";
     public static final int PORT = 8899;
-
+    private int timeout = 60000;
     private Socket socket;
     private OutputStream dos = null;
     private InputStream dis = null;
@@ -26,6 +27,8 @@ public class ApplicationUtil extends Application{
             public void run() {
                 //与服务器建立连接
                 try {
+                    socket = new Socket();
+                    socket.connect(new InetSocketAddress(ADDRESS, PORT), timeout);
                     socket = new Socket(ADDRESS, PORT);
                     dos = socket.getOutputStream();
                     dis = socket.getInputStream();
