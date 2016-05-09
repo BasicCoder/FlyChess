@@ -156,6 +156,7 @@ public class InterRoom extends Activity {
 
 					Bundle bundle = new Bundle();
 					bundle.putStringArray("roominfo", StringArray);
+					bundle.putString("username", UserName);
 					GameViewintent.putExtras(bundle);
 					
 					InterRoom.this.finish();
@@ -472,6 +473,11 @@ public class InterRoom extends Activity {
 				sendSwitch = 2;
 				Intent RoomListintent = new Intent();
 				RoomListintent.setClass(InterRoom.this, RoomActivity.class);
+
+				Bundle bundle = new Bundle();
+				bundle.putString("username", UserName); //Avoid NullPointerException in RoomActivity onCreate() get username
+				RoomListintent.putExtras(bundle);
+
 				InterRoom.this.finish();
 				InterRoom.this.startActivity(RoomListintent);
 				break;
