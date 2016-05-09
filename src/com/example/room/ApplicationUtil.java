@@ -25,7 +25,7 @@ public class ApplicationUtil extends Application{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //与服务器建立连接
+                //Connet to Server.
                 try {
                     socket = new Socket();
                     socket.connect(new InetSocketAddress(ADDRESS, PORT), timeout);

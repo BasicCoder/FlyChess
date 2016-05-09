@@ -48,8 +48,10 @@ public class RoomActivity extends Activity {
 	private SingleRoomAdapter mAdapter = null;
 	private ListView rooms;
 	private int mClickPosition = 0;
-	private String UserID = "13349076";
 
+	private String UserID = "13349076";
+	private String UserName = "13349076";
+	
 	private RequestQueue mQueue = null;
 	private RequestQueue mCreateRoomQueue = null;
 	

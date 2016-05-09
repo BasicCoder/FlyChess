@@ -73,7 +73,10 @@ public class InterRoom extends Activity {
 	private String dstName = "172.19.54.9";
 	private int dstPort = 8888;
 
+
 	private String UserID = "13349076";
+	private String UserName = "13349076";
+	private String InRoomSerial = "0";
 
 	private Timer timer = new Timer();
 	private TimerTask timertask = null;
@@ -97,12 +100,12 @@ public class InterRoom extends Activity {
 
 		mData = new LinkedList<SinglePlayer>();
 
-		// 脗碌脙茠Intent脙鈥撁兟惷偮得冣�濨undle脗露脙鈥澝兟徝兟�
+		// 
 		Bundle bundle = this.getIntent().getExtras();
-		// 脙藛脗隆脗碌脙茠Bundle脗露脙鈥澝兟徝兟趁冣�撁兟惷偮得冣�灻兣犆兟矫偮久兟�
+		// 
 		StringArray = bundle.getStringArray("roominfo");
 		// mData.add(new
-		// SinglePlayer(StringArray[1]));//脙艗脙颅脗录脙鈥溍偮访偮棵冣�撁兟访偮Ｃ偮偮访偮棵冣�撁兟访兣犆兟矫偮久兟澝偮裁偮幻冣�灻兣撁兣矫偮偮棵冣��
+		// SinglePlayer(StringArray[1]));//Create Room Infomation.
 		roomData = new SingleRoom(StringArray[0], StringArray[1], StringArray[2], StringArray[3], StringArray[4],
 				StringArray[5], StringArray[6]);
 
@@ -110,7 +113,7 @@ public class InterRoom extends Activity {
 			if (StringArray[i].length() != 0) {
 
 				if (!mData.contains(new SinglePlayer(StringArray[i]))) {
-					mData.add(new SinglePlayer(StringArray[i])); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
+					mData.add(new SinglePlayer(StringArray[i])); // 
 				}
 			}
 		}
@@ -128,7 +131,7 @@ public class InterRoom extends Activity {
 			}
 		};
 
-		// 脗录脙鈥犆兣犆兟矫冣�犆兟访偮睹偮兣犆偮泵兣捗兟该冣�斆偮偮得偮矫冣�溍兣矫兟徝偮访偮矫兟兤捗兟�
+		// Deal with timer message, when count == 10, start a new Intent.
 		mHandler = new Handler() {
 			private int count = 10;
 
@@ -144,6 +147,15 @@ public class InterRoom extends Activity {
 					timer.cancel();
 					Intent GameViewintent = new Intent();
 					GameViewintent.setClass(InterRoom.this, GameView.class);
+					String[] stringArray = new String[]{
+							roomData.getRoomId(),
+							InRoomSerial
+					};
+
+					Bundle bundle = new Bundle();
+					bundle.putStringArray("roominfo", StringArray);
+					GameViewintent.putExtras(bundle);
+					
 					InterRoom.this.finish();
 					InterRoom.this.startActivity(GameViewintent);
 				}
@@ -187,7 +199,7 @@ public class InterRoom extends Activity {
 						String[] rowData = row[i].split(",");
 						SinglePlayer player = new SinglePlayer(rowData[0]);
 						if (!mData.contains(player)) {
-							mData.add(player); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
+							mData.add(player); // add player infomation in mData.
 						}
 					}
 				}
@@ -326,11 +338,11 @@ public class InterRoom extends Activity {
 				}).start();
 
 				while (!stop) {
-					// 脗陆脙鈥溍兣犆兣撁兣犆兟矫偮久兟�
+					// malloc a buffer to get socket message.
 					buf = new byte[512];
 
-					// 碌脷脪禄麓脦陆酶脠毛路驴录盲戮脥路垄脣脥脧没脧垄
-					if (sendSwitch == 1) {
+					// First come in room, Send a message(flag) to get a Serial Number in Room.
+ 					if (sendSwitch == 1) {
 						byte[] Enterbuf = new byte[512];
 						Log.e("AsyncTask", "SendEnterRoomStart");
 						String tmp = "EnterRoom:" + RoomId + "," + NameId;
@@ -394,11 +406,15 @@ public class InterRoom extends Activity {
 				if (row[0].equals("Join")) {
 
 					if (row[1] != null) {
-						String[] playerinfo = row[1].split(",");
-						Log.e("AsyncTask_Join", row[1]);
-						SinglePlayer player = new SinglePlayer(playerinfo[0], Integer.parseInt(playerinfo[1]));
+						
+						Log.e("AsyncTask_Join_Name", row[1]);
+						Log.e("AsyncTask_Join_Id", row[2]);
+						SinglePlayer player = new SinglePlayer(row[1], Integer.parseInt(row[2]));
+						if(row[1].equals(UserName)){
+							InRoomSerial = row[2]; // Save Current User Serial in Room from Server;
+						}
 						if (!mData.contains(player)) {
-							mData.add(player); // 脙藛脙搂脗鹿脙禄脙聧脙娄脗录脙鈥櫭兤捗兟幻冣�斆冣�撁偮裁偮幻兣矫偮偮棵冣�⒚冣�∶冣�櫭兣矫偮疵兣捗兟偮济冣�溍偮得偮矫兣犆兟矫偮久兟澝冣�撁兟惷偮Ｃ偮冣�澝兟裁兣捗兟偮济冣�溍兟嵜兟γ偮济冣�櫭兤捗兟幻冣�斆冣��
+							mData.add(player); 
 						}
 					}
 				}
@@ -421,7 +437,7 @@ public class InterRoom extends Activity {
 			super.onPostExecute(result);
 			Log.e("AsyncTask", "setFullRoom");
 
-			// 脭脷release掳忙卤戮脰脨脳垄脢脥碌么
+			// In Release Version Comment It.
 			// fullRoom = true;
 
 			if (SocketConnStatus) {
@@ -507,7 +523,7 @@ public class InterRoom extends Activity {
 	@Override
 	protected void onResume() {
 		/**
-		 * 脙鈥懊兟冣�撁兤捗兣矫偮偮好兟∶冣�犆兟�
+		 * 鑴欓垾鎳婂厽顭嬪啠锟芥拋鍏ゆ崡鍏ｇ煫鍋�㈠伄濂藉厽鈭跺啠锟界妴鍏燂拷
 		 */
 		if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
