@@ -70,6 +70,10 @@ public class RoomActivity extends Activity {
 		mQueue = Volley.newRequestQueue(mContext);
 		mCreateRoomQueue = Volley.newRequestQueue(mContext);
 		
+		Bundle bundle = this.getIntent().getExtras();
+		UserName = bundle.getString("username");
+		UserID = UserName;
+		
 		mData = new LinkedList<SingleRoom>();
 		getRoomData();
 		for(int i = 0; i < names.length; i++)
