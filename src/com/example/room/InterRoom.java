@@ -234,7 +234,7 @@ public class InterRoom extends Activity {
 		private boolean SocketConnStatus = false;
 		private String dstName = null;
 		private int dstPort;
-		private int timeout = 30000;
+		private int timeout = 10000;
 		private String NameId = null;
 		private String RoomId = null;
 		private int RoomStyle;

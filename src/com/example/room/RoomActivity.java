@@ -146,6 +146,7 @@ public class RoomActivity extends Activity {
 	private Spinner Spin_RoomStyle;
 	private String StyleOfRoom = new String("4人局");
 	private String CreateRoomId = new String();
+	private String NameOfRoom = new String();
 	public void createRoom(View sourse){
 		LayoutInflater inflater = RoomActivity.this.getLayoutInflater();
 		View RegisterRoom = inflater.inflate(R.layout.select_list, null, false);
@@ -173,7 +174,7 @@ public class RoomActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which){
 				
-					String NameOfRoom = RoomName.getText().toString().trim();
+					NameOfRoom = RoomName.getText().toString().trim();
 					//String StyleOfRoom = new String("4人局");
 					if(NameOfRoom.equals(""))
 					{
@@ -184,7 +185,7 @@ public class RoomActivity extends Activity {
 						intent.setClass(RoomActivity.this, InterRoom.class);
 						
 						
-						sendCreateRoomInfo(NameOfRoom, StyleOfRoom, UserID);
+						sendCreateRoomInfo(NameOfRoom, StyleOfRoom, UserID, intent);
 
 						/*while(CreateRoomId.isEmpty()){
 
@@ -192,19 +193,7 @@ public class RoomActivity extends Activity {
 
 						//Log.e("ReceivedRoomId", CreateRoomId);
 						
-						String[] StringArray = new String[]{CreateRoomId,
-															NameOfRoom,
-															StyleOfRoom,
-															UserID,
-															new String(),
-															new String(),
-															new String()
-															};
-						Bundle bundle = new Bundle();
-						bundle.putStringArray("roominfo", StringArray);
-						intent.putExtras(bundle);
-						RoomActivity.this.finish();
-						RoomActivity.this.startActivity(intent);  
+						 
 						alert.dismiss();
 					}
 			}
@@ -245,7 +234,7 @@ public class RoomActivity extends Activity {
 	}
 	
 	//发送创建房间信息
-	private void sendCreateRoomInfo(String NameofRoom_, String StyleOfRoom_, String id_)
+	private void sendCreateRoomInfo(String NameofRoom_, String StyleOfRoom_, String id_, final Intent intent)
 	{
 		String createRoomURL = "http://" + dstName + ":" + Integer.toString(dstPort) +"/TestDemo/addRoom?name="
 				+ NameofRoom_ + "&type="+StyleOfRoom_.substring(0,1)+"&id="+id_;
@@ -256,6 +245,19 @@ public class RoomActivity extends Activity {
 					public void onResponse(String response){
 						Log.e("SendCreatRoom1", response);
 						CreateRoomId = response;
+						String[] StringArray = new String[]{CreateRoomId,
+															NameOfRoom,
+															StyleOfRoom,
+															UserID,
+															new String(),
+															new String(),
+															new String()
+															};
+						Bundle bundle = new Bundle();
+						bundle.putStringArray("roominfo", StringArray);
+						intent.putExtras(bundle);
+						RoomActivity.this.finish();
+						RoomActivity.this.startActivity(intent); 
 						Log.e("SendCreatRoom2", CreateRoomId);
 					}
 				},new Response.ErrorListener(){
