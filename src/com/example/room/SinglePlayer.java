@@ -2,14 +2,19 @@ package com.example.room;
 
 public class SinglePlayer {
 	private String PlayerName;
-	
+	private int Serial;
 	public SinglePlayer()
 	{
-		
+		Serial = 0;
 	}
 	public SinglePlayer(String PlayerName)
 	{
 		this.PlayerName = PlayerName;
+	}
+	public SinglePlayer(String PlayerName, int Serial)
+	{
+		this.PlayerName = PlayerName;
+		this.Serial = Serial;
 	}
 	public String getPlayerName()
 	{

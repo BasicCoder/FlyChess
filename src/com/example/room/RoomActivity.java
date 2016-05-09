@@ -48,7 +48,8 @@ public class RoomActivity extends Activity {
 	private SingleRoomAdapter mAdapter = null;
 	private ListView rooms;
 	private int mClickPosition = 0;
-	
+	private String UserID = "13349076";
+
 	private RequestQueue mQueue = null;
 	private RequestQueue mCreateRoomQueue = null;
 	
@@ -181,7 +182,7 @@ public class RoomActivity extends Activity {
 						intent.setClass(RoomActivity.this, InterRoom.class);
 						
 						
-						sendCreateRoomInfo(NameOfRoom, StyleOfRoom, "13349076");
+						sendCreateRoomInfo(NameOfRoom, StyleOfRoom, UserID);
 
 						/*while(CreateRoomId.isEmpty()){
 
@@ -192,7 +193,7 @@ public class RoomActivity extends Activity {
 						String[] StringArray = new String[]{CreateRoomId,
 															NameOfRoom,
 															StyleOfRoom,
-															"13349076",
+															UserID,
 															new String(),
 															new String(),
 															new String()
@@ -287,7 +288,7 @@ public class RoomActivity extends Activity {
 											singleroominfo.getPlayer2_Name(),
 											singleroominfo.getPlayer3_Name()
 											};
-		sendJoinRoomRequest(singleroominfo.getRoomId(),"13349076");
+		sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
 		Bundle bundle = new Bundle();
 		bundle.putStringArray("roominfo", StringArray);
 		intent.putExtras(bundle);
