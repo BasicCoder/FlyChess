@@ -55,7 +55,7 @@ public class RoomActivity extends Activity {
 	private RequestQueue mQueue = null;
 	private RequestQueue mCreateRoomQueue = null;
 	
-	private String dstName = "172.19.54.9";
+	private String dstName = "192.168.23.3";
 	private int dstPort = 8080;
 	
 	@Override
@@ -115,6 +115,11 @@ public class RoomActivity extends Activity {
 							for(int i = 0; i < row.length; i++)
 							{
 								String[] rowData = row[i].split(",");
+								
+								Log.e("RoomHolder", rowData[3]);
+								Log.e("Player1", rowData[4]);
+								Log.e("Player2", rowData[5]);
+								Log.e("Player3", rowData[6]);
 								
 								mData.add(new SingleRoom(rowData[0], rowData[1], rowData[2]+"ÈË¾Ö", rowData[3],  
 										rowData[4], rowData[5], rowData[6]));
@@ -299,7 +304,7 @@ public class RoomActivity extends Activity {
 											singleroominfo.getPlayer3_Name()
 											};
 		sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
-		Bundle bundle = new Bundle();
+		Bundle bundle = new Bundle(); 
 		bundle.putStringArray("roominfo", StringArray);
 		bundle.putString("username", UserName);
 		intent.putExtras(bundle);

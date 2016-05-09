@@ -13,7 +13,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class ApplicationUtil extends Application{
-	public static final String ADDRESS = "172.19.54.9";
+	public static final String ADDRESS = "192.168.23.3";
     public static final int PORT = 8899;
     private int timeout = 60000;
     private Socket socket;

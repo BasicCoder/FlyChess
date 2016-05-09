@@ -70,7 +70,7 @@ public class InterRoom extends Activity {
 	private RequestQueue mQueue = null;
 	private OkHttpClient client = new OkHttpClient();
 
-	private String dstName = "172.19.54.9";
+	private String dstName = "192.168.23.3";
 	private int dstPort = 8888;
 
 
@@ -111,8 +111,12 @@ public class InterRoom extends Activity {
 		roomData = new SingleRoom(StringArray[0], StringArray[1], StringArray[2], StringArray[3], StringArray[4],
 				StringArray[5], StringArray[6]);
 
+		Log.e("InterRoom", StringArray[3]);
+		Log.e("InterRoom", StringArray[4]);
+		Log.e("InterRoom", StringArray[5]);
+		Log.e("interRoom", StringArray[6]);
 		for (int i = 3; i < StringArray.length; i++) {
-			if (StringArray[i].length() != 0) {
+			if (StringArray[i].length() != 0 && !StringArray[i].equals("null") ) {
 
 				if (!mData.contains(new SinglePlayer(StringArray[i]))) {
 					mData.add(new SinglePlayer(StringArray[i])); // 
@@ -309,6 +313,7 @@ public class InterRoom extends Activity {
 					e.printStackTrace();
 				}
 
+				//This Thread deamon send LeaveRoom Message.
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -331,7 +336,14 @@ public class InterRoom extends Activity {
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
-								sendSwitch = 0;
+								
+								sendSwitch = 0; //Close Send Switch.
+								try{
+									clientSocket.close();
+								} catch(IOException e){
+									e.printStackTrace();
+								}
+								
 							}
 
 						}
@@ -417,7 +429,9 @@ public class InterRoom extends Activity {
 							InRoomSerial = row[2]; // Save Current User Serial in Room from Server;
 						}
 						if (!mData.contains(player)) {
+							Log.e("AsyncTask_New_Player_Name", player.getPlayerName());
 							mData.add(player); 
+							mAdapter.notifyDataSetChanged();
 						}
 					}
 				}
@@ -428,6 +442,7 @@ public class InterRoom extends Activity {
 						SinglePlayer player = new SinglePlayer(row[1]);
 						if (mData.contains(player)) {
 							mData.remove(player);
+							mAdapter.notifyDataSetChanged();
 						}
 					}
 				}
