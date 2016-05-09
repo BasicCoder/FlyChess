@@ -73,7 +73,8 @@ public class RoomActivity extends Activity {
 		Bundle bundle = this.getIntent().getExtras();
 		UserName = bundle.getString("username");
 		UserID = UserName;
-		
+		Log.e("RoomActivity", UserID);
+
 		mData = new LinkedList<SingleRoom>();
 		getRoomData();
 		for(int i = 0; i < names.length; i++)
@@ -259,6 +260,7 @@ public class RoomActivity extends Activity {
 															};
 						Bundle bundle = new Bundle();
 						bundle.putStringArray("roominfo", StringArray);
+						bundle.putString("username", UserName);
 						intent.putExtras(bundle);
 						RoomActivity.this.finish();
 						RoomActivity.this.startActivity(intent); 
@@ -299,6 +301,7 @@ public class RoomActivity extends Activity {
 		sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
 		Bundle bundle = new Bundle();
 		bundle.putStringArray("roominfo", StringArray);
+		bundle.putString("username", UserName);
 		intent.putExtras(bundle);
 		
 		startActivity(intent);

@@ -104,6 +104,8 @@ public class InterRoom extends Activity {
 		Bundle bundle = this.getIntent().getExtras();
 		// 
 		StringArray = bundle.getStringArray("roominfo");
+		UserName = bundle.getString("username");
+		UserID = UserName;
 		// mData.add(new
 		// SinglePlayer(StringArray[1]));//Create Room Infomation.
 		roomData = new SingleRoom(StringArray[0], StringArray[1], StringArray[2], StringArray[3], StringArray[4],
