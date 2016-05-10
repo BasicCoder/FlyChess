@@ -1210,6 +1210,7 @@ public class Control
 	 *  dynamic informations 
 	 */
 	
+	public static int playerNum=4;
 	private static int colorTurn = 1;
 	private static boolean diceOrNot = true;
 	private static int diceNum=1;
@@ -1226,7 +1227,7 @@ public class Control
 	
 	public static void goNextColorTurn() {
 		colorTurn = (colorTurn+1);
-		if (colorTurn>4) {
+		if (colorTurn>playerNum) {
 			colorTurn=1;
 		}
 	}
@@ -1238,8 +1239,19 @@ public class Control
 	}
 	public static boolean isFlyTurn(){
 		return diceOrNot==false;
+	}	
+	public static void setDiceTurn(){
+		diceOrNot = true;
 	}
-	
+	public static void setFlyTurn()	{
+		diceOrNot = false;
+	}
+	public static int getDiceNum() {
+		return diceNum;
+	}
+	public static void setDiceNum(int s) {
+		diceNum=s;
+	}
 	public static boolean isToReadyNum(int n) {
 		// TODO Auto-generated method stub
 		for (int i = 0; i < toReadyNum.length; i++) {
@@ -1257,20 +1269,6 @@ public class Control
 		return false;
 	}
 	
-	
-	public static void setDiceTurn(){
-		diceOrNot = true;
-	}
-	public static void setFlyTurn()	{
-		diceOrNot = false;
-	}
-	public static int getDiceNum() {
-		return diceNum;
-	}
-	public static void setDiceNum(int s) {
-		diceNum=s;
-	}
-	
 	//**
 	//*
 	// methods
@@ -1284,8 +1282,7 @@ public class Control
 				return beginBlueGreenX[1-num%2];
 		}
 		return 0;
-	}
-	
+	}	
 	static public float getStartY(int type, int num){
 		switch(type){
 			case 1:
@@ -1297,12 +1294,10 @@ public class Control
 		}
 		return 0;
 		
-	}
-	
+	}	
 	static public float getReadyStepX(int type){
 		return readyX[type-1];
-	}
-	
+	}	
 	static public float getReadyStepY(int type){
 		return readyY[type-1];
 	}

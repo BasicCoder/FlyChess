@@ -6,19 +6,19 @@ import java.io.OutputStream;
 public class SendThread extends Thread{
 	private int roomNum;
 	private int gameNum;
-	private int countNum;
-	private int planeNum;
+	private int colorNum;
+	private int planeSeq;
 	private int lenNum;
 	private ApplicationUtil appUtil;
 	private OutputStream dos = null;
 	
 	
-	public SendThread(int room, int game, int count, int plane, int len, ApplicationUtil app){
+	public SendThread(int room, int game, int color, int plane, int len, ApplicationUtil app){
 		super();
 		roomNum = room;
-		gameNum = game;
-		countNum = count;
-		planeNum = plane;
+		gameNum = game; // game progress count
+		colorNum = color;
+		planeSeq = plane;
 		lenNum = len;
 		appUtil = app;
 	    dos = appUtil.getDos();
@@ -26,7 +26,7 @@ public class SendThread extends Thread{
 	@Override
 	public void run(){
 		try {
-			String str = "room" + roomNum + "count" + countNum + "game" + gameNum + "plane" + planeNum + "len" + lenNum;
+			String str = "Game:" + roomNum + ";" + gameNum + ";" + colorNum + ";" + planeSeq + ";" + lenNum;
 			byte[] b = str.getBytes("utf-8");
 			//if(dos == null)
 				//Log.v("vvv","xxxx");

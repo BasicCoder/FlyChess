@@ -227,7 +227,7 @@ public class PlaneSprite extends Sprite{
 			}
 			Log.i("PlaneSprite Touched", ""+colorType+" " +seqNum+" "+ Control.getDiceNum());
 			
-			MsgInfo moveInfo = new MsgInfo(0, colorType, seqNum, Control.getDiceNum());
+			MsgInfo moveInfo = new MsgInfo(Control.progressCnt, colorType, seqNum, Control.getDiceNum());
 			Message msg = new Message();
 			msg.obj = moveInfo;
 			msg.what=5;

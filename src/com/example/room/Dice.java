@@ -40,7 +40,7 @@ public class Dice extends AnimatedSprite{
 			Log.i("Dice Touched", "");
 			
 			int diceResult = new Random().nextInt(6) + 1;
-			MsgInfo moveInfo = new MsgInfo(0, 5, 0, diceResult);
+			MsgInfo moveInfo = new MsgInfo(Control.progressCnt, 5, 0, diceResult);
 			Message msg = new Message();
 			msg.obj = moveInfo;
 			msg.what= 4;

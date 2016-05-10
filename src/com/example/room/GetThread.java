@@ -20,7 +20,7 @@ public class GetThread extends Thread{
 	@Override 
 	public void run(){
 		try{
-			System.out.println("等消息");
+			System.out.println("等消息 "+Control.progressCnt);
 			byte[] readIn = new byte[1024];
 			dis.read(readIn);
 			String line =  new String(readIn,"utf-8").trim(); 

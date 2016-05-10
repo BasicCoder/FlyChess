@@ -156,9 +156,12 @@ public class InterRoom extends Activity {
 					GameViewintent.setClass(InterRoom.this, GameView.class);
 					
 					Log.e("roomid", roomData.getRoomId());
+					Log.e("roomstyle", roomData.getRoomStyle().substring(0,1));
 					Log.e("userserial", InRoomSerial);
+					
 					Bundle bundle = new Bundle();
 					bundle.putString("roomid", roomData.getRoomId());
+					bundle.putString("roomstyle", roomData.getRoomStyle().substring(0,1));
 					bundle.putString("userserial", InRoomSerial);
 					GameViewintent.putExtras(bundle);
 					

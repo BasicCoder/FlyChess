@@ -50,7 +50,7 @@ public class GameView extends SimpleBaseGameActivity {
 	private InputStream dis = null;
 
 	private int roomNum = 10001;
-	public  static int localGameColor = 1;
+	public static int localGameColor = 1;
 	private int countSeq = 1;
 
 	private SendThread sendMsgThread;
@@ -77,14 +77,14 @@ public class GameView extends SimpleBaseGameActivity {
 	private ITextureRegion realBgTextureRegion;
 	private ITextureRegion tuoguanRegion;
 	private ITextureRegion tuichuRegion;
-	private Font mTextFont;
+	private Font mTitleFont;
 	private Font mPersonFont;
 	private TimerHandler myTimer;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		//final Camera camera = new Camera(-200, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		final Camera camera = new Camera(-600, -100, CAMERA_WIDTH, CAMERA_HEIGHT);
+		final Camera camera = new Camera(-575, -80, CAMERA_WIDTH, CAMERA_HEIGHT);
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, 
 				new FillResolutionPolicy(), camera);
     	
@@ -180,14 +180,14 @@ public class GameView extends SimpleBaseGameActivity {
 			this.mScoreFont.load();
 			final ITexture textFontTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 256,
 					TextureOptions.BILINEAR);
-			this.mTextFont = FontFactory.createFromAsset(this.getFontManager(), textFontTexture, this.getAssets(),
-					"huawen.ttf", 104, true, Color.WHITE);
-			this.mTextFont.load();
+			this.mTitleFont = FontFactory.createFromAsset(this.getFontManager(), textFontTexture, this.getAssets(),
+					"huawen.ttf", 72, true, Color.WHITE);
+			this.mTitleFont.load();
 
 			final ITexture textFontTextureTemp = new BitmapTextureAtlas(this.getTextureManager(), 256, 256,
 					TextureOptions.BILINEAR);
 			this.mPersonFont = FontFactory.createFromAsset(this.getFontManager(), textFontTextureTemp, this.getAssets(),
-					"huawen.ttf", 72, true, Color.WHITE);
+					"huawen.ttf", 52, true, Color.WHITE);
 			this.mPersonFont.load();
 						
 						
@@ -227,20 +227,9 @@ public class GameView extends SimpleBaseGameActivity {
 	protected Scene onCreateScene() {
 
 		// 1 - Create new scene
-		
+
 		Control.initialColorWays();
-		
-		Bundle bundle = this.getIntent().getExtras();
-		// 
-		//System.out.println("userid:" + bundle.getString("userid") 
-							//+ "userserial" + bundle.getString("userserial"));
-		String Roomid = bundle.getString("roomid");
-		String UserSerial = bundle.getString("userserial");
-		Log.e("Roomid", Roomid);
-		Log.e("UserSerial", UserSerial);
-		roomNum = Integer.parseInt(Roomid);
-		localGameColor = Integer.parseInt(UserSerial);
-		
+		Control.progressCnt = 0;
 		/*
 		 * appUtil = (ApplicationUtil) GameView.this.getApplication(); try {
 		 * appUtil.init(); Socket socket = appUtil.getSocket(); dos =
@@ -249,6 +238,20 @@ public class GameView extends SimpleBaseGameActivity {
 		 * } catch (IOException e) { e.printStackTrace(); } catch (Exception e)
 		 * { e.printStackTrace(); }
 		 */
+		Bundle bundle = this.getIntent().getExtras();
+		// 
+		
+		String Roomid = bundle.getString("roomid");
+		String RoomStyle = bundle.getString("roomstyle");
+		String UserSerial = bundle.getString("userserial");
+		
+		Log.e("Roomid", Roomid);
+		Log.e("RoomStyle", RoomStyle);
+		Log.e("UserSerial", UserSerial);
+		
+		roomNum = Integer.parseInt(Roomid);
+		Control.playerNum = Integer.parseInt(RoomStyle);
+		localGameColor = Integer.parseInt(UserSerial);
 		
 		new Thread(new Runnable() {
 			@Override
@@ -281,39 +284,42 @@ public class GameView extends SimpleBaseGameActivity {
 		Sprite gameGroundSprite = new Sprite(0, 0, this.mBackgroundTextureRegion, getVertexBufferObjectManager());
 		scene.attachChild(gameGroundSprite);
 
-		Sprite tuoguanSprite = new Sprite(846, 632, this.tuoguanRegion, getVertexBufferObjectManager());
+		Sprite tuoguanSprite = new Sprite(780, 550, this.tuoguanRegion, getVertexBufferObjectManager());
+		tuoguanSprite.setScale(0.7f);
 		scene.attachChild(tuoguanSprite);
 		
-		Sprite tuichuSprite = new Sprite(846, 772, this.tuichuRegion, getVertexBufferObjectManager());
+		Sprite tuichuSprite = new Sprite(780, 650, this.tuichuRegion, getVertexBufferObjectManager());
+		tuichuSprite.setScale(0.7f);
 		scene.attachChild(tuichuSprite);
 		
 		
-		myDice = new Dice(800, 350, mDiceTextureRegion, this.getVertexBufferObjectManager());
+		myDice = new Dice(850, 350, mDiceTextureRegion, this.getVertexBufferObjectManager());
 		// myAnimatedSprite.animate(100);
+		myDice.setScale(1.5f);
 		scene.attachChild(myDice);
 		scene.registerTouchArea(myDice);
 
-		final Text textTitle = new Text(-559,124, this.mTextFont, "玩家列表", 20, this.getVertexBufferObjectManager());
+		final Text textTitle = new Text(-559,124, this.mTitleFont, "玩家列表", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(textTitle);
 		
-		final Text personOne = new Text(-573,272, this.mPersonFont, "玩家一:", 20, this.getVertexBufferObjectManager());
+		final Text personOne = new Text(-573,272, this.mPersonFont, "玩家一:", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(personOne);
 		
-		final Text personTwo = new Text(-573,380, this.mPersonFont, "玩家二:", 20, this.getVertexBufferObjectManager());
+		final Text personTwo = new Text(-573,380, this.mPersonFont, "玩家二:", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(personTwo);
 		
-		final Text personThree = new Text(-573,488, this.mPersonFont, "玩家三:", 20, this.getVertexBufferObjectManager());
+		final Text personThree = new Text(-573,488, this.mPersonFont, "玩家三:", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(personThree);
-		final Text personFour = new Text(-573,596, this.mPersonFont, "玩家四:", 20, this.getVertexBufferObjectManager());
+		final Text personFour = new Text(-573,596, this.mPersonFont, "玩家四:", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(personFour);
 		
-		final Text stateOne = new Text(-283,272, this.mPersonFont, "等待", 20, this.getVertexBufferObjectManager());
+		final Text stateOne = new Text(-380,272, this.mPersonFont, "等待", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(stateOne);
-		final Text stateTwo = new Text(-283,380, this.mPersonFont, "等待", 20, this.getVertexBufferObjectManager());
+		final Text stateTwo = new Text(-380,380, this.mPersonFont, "等待", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(stateTwo);
-		final Text stateThree = new Text(-283,488, this.mPersonFont, "等待", 20, this.getVertexBufferObjectManager());
+		final Text stateThree = new Text(-380,488, this.mPersonFont, "等待", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(stateThree);
-		final Text stateFour = new Text(-283,596, this.mPersonFont, "等待", 20, this.getVertexBufferObjectManager());
+		final Text stateFour = new Text(-380,596, this.mPersonFont, "等待", 18, this.getVertexBufferObjectManager());
 		scene.attachChild(stateFour);
 		
 		
@@ -453,7 +459,9 @@ public class GameView extends SimpleBaseGameActivity {
 					
 					getMsgThread = new GetThread(appUtil, mainHandler);
 					getMsgThread.start();
-				
+					//scene.unregisterUpdateHandler(myTimer);
+					//scene.registerUpdateHandler(myTimer);
+					
 					try {
 						Thread.sleep(2000);
 						myDice.stopAnimation(0);
@@ -494,30 +502,33 @@ public class GameView extends SimpleBaseGameActivity {
 		// TODO Auto-generated method stub
 		Log.i("GameView", "doGameLogic");
 
-		if (msg.what == 0) {
-			MsgInfo tempMsg = (MsgInfo) msg.obj;
+		MsgInfo tempMsg = (MsgInfo) msg.obj;
+		
+		if(tempMsg.countNum != Control.progressCnt)
+			return;
+		
+		if (msg.what == 0) {		
+			
 			autoDotheMove(tempMsg);
-			
 		} //end of what == 0
+		
 		else if (msg.what == 4 && Control.isDiceTurn()) {
-			
-			MsgInfo tempMsg = (MsgInfo) msg.obj;
 
 			myDice.animate(new long[] { 150, 150, 150, 150, 150, 150 }, 
 					new int[] { 4, 2, 6, 5, 1, 3 },
 					true);
 
 			try {
-				Thread.sleep(300 + new Random().nextInt(300));
+				Thread.sleep(400 + new Random().nextInt(500));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			int msgLen = tempMsg.lenNum;// new Random().nextInt(6) + 1;
+			int diceNum = tempMsg.lenNum;// new Random().nextInt(6) + 1;
 
-			myDice.stopAnimation(msgLen);
-			Control.setDiceNum(msgLen);
+			myDice.stopAnimation(diceNum);
+			Control.setDiceNum(diceNum);
 			
 			int myOnWayCnt = 0;
 			switch (Control.getColorTurn()) {
@@ -538,7 +549,7 @@ public class GameView extends SimpleBaseGameActivity {
 			Log.i("myOnWayCnt", ""+tempMsg.colorNum +" "+myOnWayCnt);
 			
 			if (myOnWayCnt == 0 ) {
-				if(Control.isToReadyNum(msgLen)){// no valid plane and can't getoff
+				if(Control.isToReadyNum(diceNum)){// no valid plane and can't getoff
 					
 					switch (Control.getColorTurn()) {
 					case 1:
@@ -562,10 +573,11 @@ public class GameView extends SimpleBaseGameActivity {
 					Control.complete = true;
 					// inform other that this this guy (me) is skipped
 					// TODO
-					Message msgt = new Message();
-					Log.v("1", "ccc");
-					sendMsgThread = new SendThread(roomNum,0,localGameColor,0,msgLen,appUtil);
-					sendMsgThread.start();
+					Log.i("send empty", "pgs = "+Control.progressCnt+" "+localGameColor+" "+0+" "+diceNum);
+					//Log.v("1", "ccc");
+					sendMsgThread = new SendThread(roomNum,Control.progressCnt,
+							localGameColor,tempMsg.seqNum,diceNum,appUtil);sendMsgThread.start();
+					Control.progressCnt+=1;
 				}
 				
 			}
@@ -578,7 +590,6 @@ public class GameView extends SimpleBaseGameActivity {
 		else if (msg.what == 5 && Control.isFlyTurn()) {
 			
 			PlaneSprite planeSprite = null;
-			MsgInfo tempMsg = (MsgInfo) msg.obj;
 			switch (tempMsg.colorNum) {
 			case 1:
 				planeSprite = redPlaneSprite[tempMsg.seqNum - 1];
@@ -600,9 +611,18 @@ public class GameView extends SimpleBaseGameActivity {
 			if (planeSprite.currentIndex == Control.startIndex) { // at the start point
 				if (Control.isToReadyNum(diceNum)) { 	// valid planes, on start point
 					planeSprite.moveByNum(1);	// move 1 step 
+					Control.complete = true;
+					
+					Log.i("send move", "pgs = "+Control.progressCnt+" "+localGameColor+" "+tempMsg.seqNum+" "+diceNum);
+					sendMsgThread = new SendThread(roomNum,Control.progressCnt,
+							localGameColor,tempMsg.seqNum,diceNum,appUtil);
+					sendMsgThread.start();
+					Control.progressCnt+=1;
+					
+					
 					
 				} else { 	// touch a plane at start point, but the dice number
-							// invalid to get it ready
+							// can't get it to ready point
 					return;
 				}
 			} else { // not at start point
@@ -611,14 +631,17 @@ public class GameView extends SimpleBaseGameActivity {
 				Control.complete = true;
 				// inform other that this this guy (me) make the fly
 				// TODO
-				sendMsgThread = new SendThread(roomNum,0,localGameColor,tempMsg.seqNum,diceNum,appUtil);
+				Log.i("send move", "pgs = "+Control.progressCnt+" "+localGameColor+" "+tempMsg.seqNum+" "+diceNum);
+				sendMsgThread = new SendThread(roomNum,Control.progressCnt,
+						localGameColor,tempMsg.seqNum,diceNum,appUtil);
 				sendMsgThread.start();
-				
+				Control.progressCnt+=1;
 			}
 			if (!Control.isDiceAgainNum(diceNum)) {
 				Control.goNextColorTurn();
 			}
 			Control.setDiceTurn();
+			
 		}//end of what == 5
 		
 	}
@@ -703,7 +726,7 @@ public class GameView extends SimpleBaseGameActivity {
 		myDice.animate(new long[] { 150, 150, 150, 150, 150, 150 }, new int[] { 4, 2, 6, 5, 1, 3 }, true);
 	
 		try {
-			Thread.sleep(400 + new Random().nextInt(200));
+			Thread.sleep(400 + new Random().nextInt(500));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -753,6 +776,7 @@ public class GameView extends SimpleBaseGameActivity {
 				Control.complete=true;
 				// inform other that this this guy (me) is skipped
 				// TODO
+				Control.progressCnt++;
 				return;
 			}
 			
@@ -795,6 +819,8 @@ public class GameView extends SimpleBaseGameActivity {
 		if (planeSprite.currentIndex == Control.startIndex) { // at the start point
 			if (Control.isToReadyNum(diceNum)) { 	// valid planes, at start point
 				planeSprite.moveByNum(1);	// move 1 step 
+				Control.complete=true;
+				Control.progressCnt++;
 				
 			} else { 	// touch a plane at start point, but the dice number
 						// invalid to get it ready
@@ -804,6 +830,7 @@ public class GameView extends SimpleBaseGameActivity {
 
 			planeSprite.moveByNum(diceNum);
 			Control.complete=true;
+			Control.progressCnt++;
 			// TODO
 		
 		}
