@@ -148,7 +148,7 @@ public class InterRoom extends Activity {
 
 				count = count - 1;
 
-				Toast.makeText(mContext, Integer.toString(count), Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "游戏即将开始 "+Integer.toString(count), Toast.LENGTH_SHORT).show();
 
 				if (count == 0) {
 					timer.cancel();

@@ -1,11 +1,14 @@
 package com.example.room;
 
+import com.example.room.LoginActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class SignupActivity extends Activity {
 	private String name;
@@ -18,6 +21,8 @@ public class SignupActivity extends Activity {
         setContentView(R.layout.activity_signup);
         Button bn = (Button) findViewById(R.id.bt1);
         bn.setOnClickListener(new bnClickListener());
+        TextView tv = (TextView)findViewById(R.id.tv1);
+        tv.setOnClickListener(new tvClickListener());
     }
     class bnClickListener implements View.OnClickListener
     {
@@ -38,6 +43,19 @@ public class SignupActivity extends Activity {
                 startActivity(intent);
                 finish();
             }
+
+
+        }
+
+    }
+    
+    class tvClickListener implements View.OnClickListener
+    {
+        public void onClick(View v)
+        {
+            Intent intent = new Intent();
+            intent.setClass(SignupActivity.this, LoginActivity.class);
+            startActivity(intent);
 
 
         }

@@ -117,24 +117,26 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
             ></View>
+
         <Button
             android:id="@+id/bt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
             android:background="#32dccd"
             android:text="login"
             android:textColor="#ffffff"
-            android:typeface="monospace"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:typeface="monospace" />
+
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="new here？sign up now"
+            android:text="New here？Sign up now"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:textStyle="italic"
