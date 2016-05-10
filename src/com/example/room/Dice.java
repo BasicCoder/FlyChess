@@ -7,6 +7,9 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import android.os.Message;
+import android.util.Log;
+
 public class Dice extends AnimatedSprite{
 
 	public Dice(float pX, float pY, ITiledTextureRegion pTiledTextureRegion,
@@ -22,12 +25,28 @@ public class Dice extends AnimatedSprite{
 	@Override
     public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
-			if(Control.diceOrNot == 1)
-				return true;
-			int result = new Random().nextInt(6) + 1;
-			this.animate(new long[]{100,100,100,100,100,100,100}, new int[]{4,2,6,5,1,3,result}, false);
-			Control.diceOrNot = 1;
-			Control.len = result;
+			
+			// TODO
+			/*
+			if(Control.getColorTurn() != GameView.localGameColor)
+				return true;	
+			*/		
+			if(! Control.isDiceTurn()){
+				stopAnimation(0);
+			}
+			
+			// then ensure it is dice's turn, and is my color
+			
+			Log.i("Dice Touched", "");
+			
+			int diceResult = new Random().nextInt(6) + 1;
+			MsgInfo moveInfo = new MsgInfo(0, 5, 0, diceResult);
+			Message msg = new Message();
+			msg.obj = moveInfo;
+			msg.what= 4;
+			GameView.mainHandler.sendMessage(msg);
+			
+			
 			//this.stopAnimation(0);
 		}
 		//this.setPosition(pSceneTouchEvent.getX() - this.getWidth() / 2, pSceneTouchEvent.getY() - this.getHeight() / 2);

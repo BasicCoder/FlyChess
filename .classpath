@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="libs/Volley.jar"/>
 	<classpathentry kind="lib" path="libs/okio-1.6.0.jar"/>
 	<classpathentry kind="lib" path="libs/okhttp-2.7.5.jar"/>
+	<classpathentry kind="lib" path="libs/andengine.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AndEngine"/>
-	<classpathentry kind="lib" path="/FlyGame/libs/andengine.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

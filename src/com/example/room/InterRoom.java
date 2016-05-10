@@ -104,6 +104,7 @@ public class InterRoom extends Activity {
 		Bundle bundle = this.getIntent().getExtras();
 		// 
 		StringArray = bundle.getStringArray("roominfo");
+		
 		UserID = bundle.getString("userid");
 		UserName = UserID;
 		// mData.add(new
@@ -153,14 +154,12 @@ public class InterRoom extends Activity {
 					timer.cancel();
 					Intent GameViewintent = new Intent();
 					GameViewintent.setClass(InterRoom.this, GameView.class);
-					String[] stringArray = new String[]{
-							roomData.getRoomId(),
-							InRoomSerial
-					};
-
+					
+					Log.e("roomid", roomData.getRoomId());
+					Log.e("userserial", InRoomSerial);
 					Bundle bundle = new Bundle();
-					bundle.putStringArray("roominfo", StringArray);
-					bundle.putString("userid", UserID);
+					bundle.putString("roomid", roomData.getRoomId());
+					bundle.putString("userserial", InRoomSerial);
 					GameViewintent.putExtras(bundle);
 					
 					InterRoom.this.finish();
@@ -245,6 +244,7 @@ public class InterRoom extends Activity {
 		private String NameId = null;
 		private String RoomId = null;
 		private int RoomStyle;
+		private int count = 1;
 
 		private InputStream inStream = null;
 		private OutputStream outStream = null;
@@ -425,14 +425,17 @@ public class InterRoom extends Activity {
 						Log.e("AsyncTask_Join_Name", row[1]);
 						Log.e("AsyncTask_Join_Id", row[2]);
 						SinglePlayer player = new SinglePlayer(row[1], Integer.parseInt(row[2]));
-						if(row[1].equals(UserName)){
+						Log.e("AsyncTask_Join_UserName", UserName);
+						if(count == 1){
 							InRoomSerial = row[2]; // Save Current User Serial in Room from Server;
+							Log.e("UserSerial", InRoomSerial);
 						}
 						if (!mData.contains(player)) {
 							Log.e("AsyncTask_New_Player_Name", player.getPlayerName());
 							mData.add(player); 
 							mAdapter.notifyDataSetChanged();
 						}
+						++count;
 					}
 				}
 
