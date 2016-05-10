@@ -234,11 +234,11 @@ public class GameView extends SimpleBaseGameActivity {
 		// 
 		//System.out.println("userid:" + bundle.getString("userid") 
 							//+ "userserial" + bundle.getString("userserial"));
-		String Userid = bundle.getString("userid");
+		String Roomid = bundle.getString("roomid");
 		String UserSerial = bundle.getString("userserial");
-		Log.e("Userid", Userid);
+		Log.e("Roomid", Roomid);
 		Log.e("UserSerial", UserSerial);
-		roomNum = Integer.parseInt(Userid);
+		roomNum = Integer.parseInt(Roomid);
 		localGameColor = Integer.parseInt(UserSerial);
 		
 		/*
