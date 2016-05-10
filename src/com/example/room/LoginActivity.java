@@ -33,7 +33,7 @@ public class LoginActivity extends Activity{
             Intent intent = new Intent(LoginActivity.this, RoomActivity.class);
             
             Bundle bundle = new Bundle();
-            bundle.putString("username", name);
+            bundle.putString("userid", name);
             intent.putExtras(bundle);
             
             startActivity(intent);

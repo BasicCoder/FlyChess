@@ -71,8 +71,8 @@ public class RoomActivity extends Activity {
 		mCreateRoomQueue = Volley.newRequestQueue(mContext);
 		
 		Bundle bundle = this.getIntent().getExtras();
-		UserName = bundle.getString("username");
-		UserID = UserName;
+		UserID = bundle.getString("userid");
+		UserName = UserID;
 		Log.e("RoomActivity", UserID);
 
 		mData = new LinkedList<SingleRoom>();
@@ -124,6 +124,7 @@ public class RoomActivity extends Activity {
 								mData.add(new SingleRoom(rowData[0], rowData[1], rowData[2]+"ÈË¾Ö", rowData[3],  
 										rowData[4], rowData[5], rowData[6]));
 							}
+							mAdapter.notifyDataSetChanged();
 						}
 		
 					}
@@ -258,14 +259,14 @@ public class RoomActivity extends Activity {
 						String[] StringArray = new String[]{CreateRoomId,
 															NameOfRoom,
 															StyleOfRoom,
-															UserID,
+															new String(),
 															new String(),
 															new String(),
 															new String()
 															};
 						Bundle bundle = new Bundle();
 						bundle.putStringArray("roominfo", StringArray);
-						bundle.putString("username", UserName);
+						bundle.putString("userid", UserID);
 						intent.putExtras(bundle);
 						RoomActivity.this.finish();
 						RoomActivity.this.startActivity(intent); 
@@ -306,7 +307,7 @@ public class RoomActivity extends Activity {
 		sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
 		Bundle bundle = new Bundle(); 
 		bundle.putStringArray("roominfo", StringArray);
-		bundle.putString("username", UserName);
+		bundle.putString("userid", UserID);
 		intent.putExtras(bundle);
 		
 		startActivity(intent);

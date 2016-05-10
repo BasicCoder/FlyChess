@@ -104,8 +104,8 @@ public class InterRoom extends Activity {
 		Bundle bundle = this.getIntent().getExtras();
 		// 
 		StringArray = bundle.getStringArray("roominfo");
-		UserName = bundle.getString("username");
-		UserID = UserName;
+		UserID = bundle.getString("userid");
+		UserName = UserID;
 		// mData.add(new
 		// SinglePlayer(StringArray[1]));//Create Room Infomation.
 		roomData = new SingleRoom(StringArray[0], StringArray[1], StringArray[2], StringArray[3], StringArray[4],
@@ -114,7 +114,7 @@ public class InterRoom extends Activity {
 		Log.e("InterRoom", StringArray[3]);
 		Log.e("InterRoom", StringArray[4]);
 		Log.e("InterRoom", StringArray[5]);
-		Log.e("interRoom", StringArray[6]);
+		Log.e("InterRoom", StringArray[6]);
 		for (int i = 3; i < StringArray.length; i++) {
 			if (StringArray[i].length() != 0 && !StringArray[i].equals("null") ) {
 
