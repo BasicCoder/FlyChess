@@ -109,7 +109,7 @@ public class RoomActivity extends Activity {
 				getRoomData();
 			}
 		};
-		timer.schedule(timertask, 1000, 15000);
+		timer.schedule(timertask, 1000, 10000);
 		/*List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 		for(int i = 0; i < names.length; i++){
 			Map<String, Object> listItem = new HashMap<String, Object>();
@@ -379,7 +379,11 @@ public class RoomActivity extends Activity {
 //		}
 //		return super.onOptionsItemSelected(item);
 //	}
-	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		timer.cancel();
+	}
 	@Override
 	protected void onResume() {
 	 /**
