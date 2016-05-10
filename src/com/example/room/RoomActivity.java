@@ -53,7 +53,6 @@ public class RoomActivity extends Activity {
 	private String UserName = "13349076";
 	
 	private RequestQueue mQueue = null;
-	private RequestQueue mCreateRoomQueue = null;
 	
 	private String dstName = "192.168.23.3";
 	private int dstPort = 8080;
@@ -68,7 +67,6 @@ public class RoomActivity extends Activity {
 		rooms = (ListView) findViewById(R.id.rooms);
 		
 		mQueue = Volley.newRequestQueue(mContext);
-		mCreateRoomQueue = Volley.newRequestQueue(mContext);
 		
 		Bundle bundle = this.getIntent().getExtras();
 		UserID = bundle.getString("userid");
@@ -109,7 +107,7 @@ public class RoomActivity extends Activity {
 				new Response.Listener<String>(){
 					@Override
 					public void onResponse(String response){
-						Log.d("GetRoomData", response);
+						Log.e("GetRoomData", response);
 						if(!response.equals("Failed")){
 							String[] row = response.split(";");
 							for(int i = 0; i < row.length; i++)
@@ -286,7 +284,7 @@ public class RoomActivity extends Activity {
 				};
 
 		
-				mCreateRoomQueue.add(CreateRoomRequest);
+				mQueue.add(CreateRoomRequest);
 	}
 	
 	//Button点击加入房间信息

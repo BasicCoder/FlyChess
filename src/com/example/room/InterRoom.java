@@ -160,7 +160,7 @@ public class InterRoom extends Activity {
 
 					Bundle bundle = new Bundle();
 					bundle.putStringArray("roominfo", StringArray);
-					bundle.putString("username", UserName);
+					bundle.putString("userid", UserID);
 					GameViewintent.putExtras(bundle);
 					
 					InterRoom.this.finish();
@@ -446,6 +446,11 @@ public class InterRoom extends Activity {
 						}
 					}
 				}
+
+				Log.e("AysncTask_DataSize",  Integer.toString(mData.size()));
+				if(mData.size() == RoomStyle){
+					fullRoom = true;
+				}
 			}
 
 		}
@@ -490,7 +495,7 @@ public class InterRoom extends Activity {
 				RoomListintent.setClass(InterRoom.this, RoomActivity.class);
 
 				Bundle bundle = new Bundle();
-				bundle.putString("username", UserName); //Avoid NullPointerException in RoomActivity onCreate() get username
+				bundle.putString("userid", UserID); //Avoid NullPointerException in RoomActivity onCreate() get username
 				RoomListintent.putExtras(bundle);
 
 				InterRoom.this.finish();
