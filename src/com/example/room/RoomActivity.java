@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +16,8 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +60,10 @@ public class RoomActivity extends Activity {
 	private String dstName = "172.19.49.75";
 	private int dstPort = 8080;
 	
+	private Timer timer = new Timer();
+	private TimerTask timertask = null;
+	private Handler mHandler = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,7 +91,25 @@ public class RoomActivity extends Activity {
 		rooms.setAdapter(mAdapter);
 		rooms.setOnItemClickListener(new ListViewItemClick());
 		
+		timertask = new TimerTask() {
+			@Override
+			public void run() {
+				// Log.e("Timetask", String.valueOf(fullRoom));
+				Message message = new Message();
+				message.what = 1;
+				mHandler.sendMessage(message);
+			}
+		};
 		
+		mHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				Toast.makeText(mContext, "Auto Update Rooms List", Toast.LENGTH_SHORT).show();
+				getRoomData();
+			}
+		};
+		timer.schedule(timertask, 1000, 15000);
 		/*List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 		for(int i = 0; i < names.length; i++){
 			Map<String, Object> listItem = new HashMap<String, Object>();
@@ -107,6 +132,8 @@ public class RoomActivity extends Activity {
 				new Response.Listener<String>(){
 					@Override
 					public void onResponse(String response){
+						
+						if(mData.size() != 0) mData.clear();
 						Log.e("GetRoomData", response);
 						if(!response.equals("Failed")){
 							String[] row = response.split(";");
