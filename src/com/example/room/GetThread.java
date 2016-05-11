@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public class GetThread extends Thread{
 	private InputStream dis = null;
@@ -21,19 +20,20 @@ public class GetThread extends Thread{
 	@Override 
 	public void run(){
 		try{
-			System.out.println("等消息 "+Control.progressCnt);
+			System.out.println("等消息 "+Control.progressCnt+" color="+Control.getColorTurn());
 			byte[] readIn = new byte[1024];
 			dis.read(readIn);
+			
 			String line =  new String(readIn,"utf-8").trim(); 
-			Log.e("GetThread", line);
 			String[] row = line.split(";");
 			
 			Message msg = new Message();
-			msg.what = 0;
+			msg.what = 10;
 			MsgInfo tempMsg = new MsgInfo(Integer.parseInt(row[0]),Integer.parseInt(row[1]),Integer.parseInt(row[2]),Integer.parseInt(row[3]));
 			msg.obj = tempMsg;
+			
 			handler.sendMessage(msg);
-			Control.complete = false;
+			
 			System.out.println(line);
 		}
 		catch(Exception e){

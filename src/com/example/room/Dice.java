@@ -27,10 +27,10 @@ public class Dice extends AnimatedSprite{
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
 			
 			// TODO
-			/*
+			
 			if(Control.getColorTurn() != GameView.localGameColor)
 				return true;	
-			*/		
+					
 			if(! Control.isDiceTurn()){
 				stopAnimation(0);
 			}

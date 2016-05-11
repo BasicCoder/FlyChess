@@ -1216,7 +1216,7 @@ public class Control
 	private static int diceNum=1;
 	private static int myGameNum=1;
 	protected static boolean gameOver = false;
-	protected static boolean complete = false; // flag: operation done
+	protected static boolean complete = true; // flag: operation done
 	protected static int progressCnt;
 	protected static int selectSeq;
 

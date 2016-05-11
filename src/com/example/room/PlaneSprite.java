@@ -102,7 +102,7 @@ public class PlaneSprite extends Sprite{
 					else if (currentIndex >= 0)
 						GameView.checkCrushBackHome(colorType,currentIndex);
 				}
-				Control.complete=true;
+				//Control.complete=true;
 				// end of a round of movement
 				
 			}
@@ -220,11 +220,12 @@ public class PlaneSprite extends Sprite{
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP
 				&& Control.isFlyTurn()) 
 		{
-			if(		Control.getColorTurn() != colorType 
-					//|| Control.getColorTurn()!=GameView.localGameColor
-					){
+			if(		Control.getColorTurn() != colorType ){
 				return true;
 			}
+			if(Control.getColorTurn()!=GameView.localGameColor)
+				return true;
+			
 			Log.i("PlaneSprite Touched", ""+colorType+" " +seqNum+" "+ Control.getDiceNum());
 			
 			MsgInfo moveInfo = new MsgInfo(Control.progressCnt, colorType, seqNum, Control.getDiceNum());

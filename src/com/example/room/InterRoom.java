@@ -387,7 +387,9 @@ public class InterRoom extends Activity {
 
 						sendSwitch = 0;
 					}
-
+ 					
+ 					if(isCancelled()) break;
+ 					
 					if(ReadCount > 0){
 						buf = new byte[512];
 						try {
@@ -461,6 +463,7 @@ public class InterRoom extends Activity {
 						SinglePlayer player = new SinglePlayer(row[1]);
 						if (mData.contains(player)) {
 							mData.remove(player);
+							ReadCount ++;
 							mAdapter.notifyDataSetChanged();
 						}
 					}

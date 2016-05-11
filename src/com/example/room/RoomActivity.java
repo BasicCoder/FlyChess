@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -41,6 +42,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.room.InterRoom.ClickEvent;
 
 public class RoomActivity extends Activity {
 	
@@ -63,6 +65,9 @@ public class RoomActivity extends Activity {
 	private Timer timer = new Timer();
 	private TimerTask timertask = null;
 	private Handler mHandler = null;
+	
+	
+	private Button btnReplayGame;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +126,8 @@ public class RoomActivity extends Activity {
 		SimpleAdapter simpleAdapter = new SimpleAdapter(this, listItems, R.layout.room_list, new String[]{"names","desc"}, new int []{R.id.name, R.id.desc});
 		ListView list = (ListView) findViewById(R.id.room);
 		list.setAdapter(simpleAdapter);*/
-		
+		btnReplayGame = (Button) findViewById(R.id.replay);
+		btnReplayGame.setOnClickListener(new ClickEvent());
 	}
 	
 	private void getRoomData()
@@ -379,6 +385,17 @@ public class RoomActivity extends Activity {
 //		}
 //		return super.onOptionsItemSelected(item);
 //	}
+	
+	class ClickEvent implements View.OnClickListener{
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+				case R.id.replay:
+					//Intent = new Intent();
+					break;
+			}
+		}
+	}
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
