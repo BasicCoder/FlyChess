@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 public class GetThread extends Thread{
 	private InputStream dis = null;
@@ -24,6 +25,7 @@ public class GetThread extends Thread{
 			byte[] readIn = new byte[1024];
 			dis.read(readIn);
 			String line =  new String(readIn,"utf-8").trim(); 
+			Log.e("GetThread", line);
 			String[] row = line.split(";");
 			
 			Message msg = new Message();

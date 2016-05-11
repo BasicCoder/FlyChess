@@ -257,8 +257,7 @@ public class GameView extends SimpleBaseGameActivity {
 			@Override
 			public void run() {
 				try {
-					appUtil = (ApplicationUtil) GameView.this.getApplication();
-					appUtil.init();
+					appUtil = (ApplicationUtil) GameView.this.getApplication();				
 					Socket socket = appUtil.getSocket();
 					dos = appUtil.getDos();
 					dis = appUtil.getDis();
@@ -482,7 +481,7 @@ public class GameView extends SimpleBaseGameActivity {
 		
 		
 		Control.setDiceTurn();
-		Control.complete = false;
+		Control.complete = true;
 		return scene;
 	}
 

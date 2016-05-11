@@ -77,6 +77,7 @@ public class InterRoom extends Activity {
 	private String UserID = "13349076";
 	private String UserName = "13349076";
 	private String InRoomSerial = "0";
+	private int HaveRoomCount = 0;
 
 	private Timer timer = new Timer();
 	private TimerTask timertask = null;
@@ -120,6 +121,7 @@ public class InterRoom extends Activity {
 			if (StringArray[i].length() != 0 && !StringArray[i].equals("null") ) {
 
 				if (!mData.contains(new SinglePlayer(StringArray[i]))) {
+					HaveRoomCount++;
 					mData.add(new SinglePlayer(StringArray[i])); // 
 				}
 			}
@@ -165,6 +167,8 @@ public class InterRoom extends Activity {
 					bundle.putString("userserial", InRoomSerial);
 					GameViewintent.putExtras(bundle);
 					
+					timer.cancel();
+					receiveSendThread.cancel(true);
 					InterRoom.this.finish();
 					InterRoom.this.startActivity(GameViewintent);
 				}
@@ -227,12 +231,34 @@ public class InterRoom extends Activity {
 	// private ReceiveThread mReceiveThread = null;
 	private boolean stop = true;
 	private int sendSwitch = 1;
+	ApplicationUtil appUtil = null;
 
+	private ReceiveSendThread receiveSendThread = new ReceiveSendThread();
+	
 	private void getPlayerInfo1(String dstName, int dstPort) {
 
 		Log.e("Thread", "CreateNewThread");
-		stop = false;
-		new ReceiveSendThread().execute(dstName, Integer.toString(dstPort), UserID, roomData.getRoomId(),
+		stop = false;		
+		appUtil = (ApplicationUtil) InterRoom.this.getApplication();
+		try {
+			Log.e("GetPlayerInfo1", "CreateSocket");
+			// clientSocket = new Socket(dstName, dstPort);
+
+			appUtil.init();
+
+			// clientSocket.setSoTimeout(timeout);
+
+			Log.e("GetPlayerInfo1", "CreateSocketOver");
+		} catch (SocketTimeoutException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		receiveSendThread.execute(dstName, Integer.toString(dstPort), UserID, roomData.getRoomId(),
 				roomData.getRoomStyle().substring(0, 1));
 		Log.e("Thread", "StartUp");
 
@@ -248,6 +274,7 @@ public class InterRoom extends Activity {
 		private String RoomId = null;
 		private int RoomStyle;
 		private int count = 1;
+		private int ReadCount;
 
 		private InputStream inStream = null;
 		private OutputStream outStream = null;
@@ -263,8 +290,7 @@ public class InterRoom extends Activity {
 			NameId = params[2];
 			RoomId = params[3];
 			RoomStyle = Integer.parseInt(params[4]);
-
-			ApplicationUtil appUtil = (ApplicationUtil) InterRoom.this.getApplication();
+			ReadCount = RoomStyle - HaveRoomCount;
 
 			Log.e("dstName", dstName);
 			Log.e("dstPort", params[1]);
@@ -273,31 +299,12 @@ public class InterRoom extends Activity {
 			Log.e("RoomStyle", params[4]);
 
 			try {
-				Log.e("AsyncTask", "CreateSocket");
-				// clientSocket = new Socket(dstName, dstPort);
-
-				appUtil.init();
-
-				try {
-					Thread.sleep(timeout);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				clientSocket = appUtil.getSocket();
-
-				// clientSocket.setSoTimeout(timeout);
-
-				Log.e("AsyncTask", "CreateSocketOver");
-			} catch (SocketTimeoutException e) {
-				e.printStackTrace();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
+				Thread.sleep(timeout);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			clientSocket = appUtil.getSocket();
+			
 
 			if (clientSocket != null) {
 				SocketConnStatus = clientSocket.isConnected();
@@ -381,25 +388,31 @@ public class InterRoom extends Activity {
 						sendSwitch = 0;
 					}
 
-					buf = new byte[512];
-					try {
-						Log.e("inStream", "readBuf");
-						inStream.read(this.buf);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					if(ReadCount > 0){
+						buf = new byte[512];
+						try {
+							Log.e("inStream", "readBuf");
+							inStream.read(this.buf);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}	
 
-					try {
-						Log.e("str", "CreateStr");
-						str = new String(this.buf, "UTF-8").trim();
-						Log.e("AsyncTask", str);
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
+						try {
+							Log.e("CreateStr", "CreateStr");
+							str = new String(this.buf, "UTF-8").trim();
+							Log.e("AsyncTask", str);
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
+						if (str != null) {
+							Log.e("publish", str);
+							ReadCount --;
+							publishProgress(str);
+						}
+					}else{
+						return "End receive.";
 					}
-					if (str != null) {
-						Log.e("publish", str);
-						publishProgress(str);
-					}
+					
 
 				}
 			} else {
@@ -553,6 +566,7 @@ public class InterRoom extends Activity {
 		super.onDestroy();
 		stop = true;
 		timer.cancel();
+		receiveSendThread.cancel(true);
 	}
 
 	@Override

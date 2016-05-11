@@ -28,8 +28,7 @@ public class ApplicationUtil extends Application{
                 //Connet to Server.
                 try {
                     socket = new Socket();
-                    socket.connect(new InetSocketAddress(ADDRESS, PORT), timeout);
-                    socket = new Socket(ADDRESS, PORT);
+                    socket.connect(new InetSocketAddress(ADDRESS, PORT), timeout);                
                     dos = socket.getOutputStream();
                     dis = socket.getInputStream();
                 } catch (Exception e) {

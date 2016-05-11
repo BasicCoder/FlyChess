@@ -329,7 +329,7 @@ public class RoomActivity extends Activity {
 											singleroominfo.getPlayer2_Name(),
 											singleroominfo.getPlayer3_Name()
 											};
-		sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
+		//sendJoinRoomRequest(singleroominfo.getRoomId(), UserID);
 		Bundle bundle = new Bundle(); 
 		bundle.putStringArray("roominfo", StringArray);
 		bundle.putString("userid", UserID);
