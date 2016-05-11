@@ -126,8 +126,8 @@ public class RoomActivity extends Activity {
 		SimpleAdapter simpleAdapter = new SimpleAdapter(this, listItems, R.layout.room_list, new String[]{"names","desc"}, new int []{R.id.name, R.id.desc});
 		ListView list = (ListView) findViewById(R.id.room);
 		list.setAdapter(simpleAdapter);*/
-		btnReplayGame = (Button) findViewById(R.id.replay);
-		btnReplayGame.setOnClickListener(new ClickEvent());
+		//btnReplayGame = (Button) findViewById(R.id.replay);
+		//btnReplayGame.setOnClickListener(new ClickEvent());
 	}
 	
 	private void getRoomData()
@@ -390,9 +390,8 @@ public class RoomActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-				case R.id.replay:
-					//Intent = new Intent();
-					break;
+				
+				
 			}
 		}
 	}

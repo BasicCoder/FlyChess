@@ -76,15 +76,7 @@
                 android:layout_weight="0"
                 android:orientation="vertical" >
 				
-                <Button
-                    android:id="@+id/replay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_bt"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="bottom"
-                    android:text="游戏回放"
-                    />
+       
                 <Button
                     android:id="@+id/create"
                     android:layout_width="wrap_content"

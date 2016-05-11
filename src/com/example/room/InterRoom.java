@@ -165,6 +165,7 @@ public class InterRoom extends Activity {
 					bundle.putString("roomid", roomData.getRoomId());
 					bundle.putString("roomstyle", roomData.getRoomStyle().substring(0,1));
 					bundle.putString("userserial", InRoomSerial);
+					bundle.putBoolean("isreplay", Boolean.valueOf(false));
 					GameViewintent.putExtras(bundle);
 					
 					timer.cancel();

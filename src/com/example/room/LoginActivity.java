@@ -18,14 +18,17 @@ public class LoginActivity extends Activity{
         Button bn = (Button) findViewById(R.id.bt);
         bn.setOnClickListener(new bnClickListener());
 
-        TextView tv = (TextView)findViewById(R.id.tv1);
-        tv.setOnClickListener(new tvClickListener());
+        TextView tv1 = (TextView)findViewById(R.id.tv1);
+        tv1.setOnClickListener(new tvClickListener());
+        TextView tv2 = (TextView)findViewById(R.id.tv2);
+        tv2.setOnClickListener(new tvClickListener());
 
     }
     class bnClickListener implements View.OnClickListener
     {
         public void onClick(View v)
         {
+
             EditText ed_name = (EditText) findViewById(R.id.ed_name);
             EditText ed_psd = (EditText) findViewById(R.id.ed_psd);
             name=new String(ed_name.getText().toString());
@@ -46,9 +49,26 @@ public class LoginActivity extends Activity{
     {
         public void onClick(View v)
         {
-            Intent intent = new Intent();
-            intent.setClass(LoginActivity.this, SignupActivity.class);
-            startActivity(intent);
+        	switch(v.getId()){
+        	
+        	case R.id.tv1:
+        		Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, SignupActivity.class);
+                startActivity(intent);
+        		break;
+        	case R.id.tv2:
+        		Intent ReplayGameView = new Intent();
+        		ReplayGameView.setClass(LoginActivity.this, GameView.class);
+        		Bundle bundle = new Bundle();
+				bundle.putString("roomid", "1");
+				bundle.putString("roomstyle", "1");
+				bundle.putString("userserial", "1");
+				bundle.putBoolean("isreplay", Boolean.valueOf(true));
+				ReplayGameView.putExtras(bundle);
+                startActivity(ReplayGameView);
+        		break;
+        	}
+            
 
 
         }

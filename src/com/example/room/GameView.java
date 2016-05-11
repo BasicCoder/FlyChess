@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,12 +42,15 @@ import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 import com.example.room.PlaneSprite;
 
+import android.R.bool;
+import android.R.string;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.ColorInt;
 import android.util.Log;
 
 public class GameView extends SimpleBaseGameActivity {
@@ -53,7 +61,7 @@ public class GameView extends SimpleBaseGameActivity {
 	private int roomNum = 10001;
 	public static int localGameColor = 1;
 	//private int countSeq = 1;
-
+	public static String[] colorString={"","RED","YELLOW","BLUE","GREEN"};
 	private SendThread sendMsgThread;
 	private GetThread getMsgThread;
 	public static Handler mainHandler;
@@ -62,7 +70,7 @@ public class GameView extends SimpleBaseGameActivity {
 	ApplicationUtil appUtil;
 
 	private int timeLast = 15;
-	private Font mScoreFont;
+	private Font mLCD50Font;
 	private static int CAMERA_WIDTH = 1600;
 	private static int CAMERA_HEIGHT = 900;
 	private ITextureRegion mBackgroundTextureRegion;
@@ -78,14 +86,18 @@ public class GameView extends SimpleBaseGameActivity {
 	private ITextureRegion realBgTextureRegion;
 	private ITextureRegion tuoguanRegion;
 	private ITextureRegion tuichuRegion;
-	private Font mTitleFont;
-	private Font mPersonFont;
+	private Font mHuawen80Font;
+	private Font mHuawen52Font;
+	private Font mLCD72Font;
 	private TimerHandler myTimer;
-	private Font mRedFont;
-	private Font mYellowFont;
-	private Font mBlueFont;
-	private Font mGreenFont;
+	protected Text timeCount;
+	private static ArrayList<String>msgQueue;
+	private static Text msgListText;
 
+	
+	public boolean isReplay = false;
+	
+	
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		//final Camera camera = new Camera(-200, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -183,38 +195,28 @@ public class GameView extends SimpleBaseGameActivity {
 					TextureOptions.BILINEAR);
 			FontFactory.setAssetBasePath("font/");
 			
-			this.mScoreFont = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
-					"LCD.ttf", 32, true, Color.WHITE);
-			this.mScoreFont.load();
+			this.mLCD50Font = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
+					"LCD.ttf", 50, true, Color.WHITE);
+			this.mLCD50Font.load();
 			
-			this.mRedFont = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
-					"LCD.ttf", 32, true, Color.RED);
-			this.mRedFont.load();
-			
-			this.mYellowFont = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
-					"LCD.ttf", 32, true, Color.YELLOW);
-			this.mYellowFont.load();
-			
-			this.mBlueFont = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
-					"LCD.ttf", 32, true, Color.BLUE);
-			this.mBlueFont.load();
-			
-			this.mGreenFont = FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture, this.getAssets(),
-					"LCD.ttf", 32, true, Color.GREEN);
-			this.mGreenFont.load();
+			final ITexture scoreFontTexture1 = new BitmapTextureAtlas(this.getTextureManager(), 256, 256,
+					TextureOptions.BILINEAR);
+			mLCD72Font= FontFactory.createFromAsset(this.getFontManager(), scoreFontTexture1, this.getAssets(),
+					"LCD.ttf", 72, true, Color.WHITE);
+			this.mLCD72Font.load();
 			
 			final ITexture textFontTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 256,
 					TextureOptions.BILINEAR);
 			
-			this.mTitleFont = FontFactory.createFromAsset(this.getFontManager(), textFontTexture, this.getAssets(),
-					"huawen.ttf", 72, true, Color.BLACK);
-			this.mTitleFont.load();
+			this.mHuawen80Font = FontFactory.createFromAsset(this.getFontManager(), textFontTexture, this.getAssets(),
+					"huawen.ttf", 80, true, Color.BLACK);
+			this.mHuawen80Font.load();
 
 			final ITexture textFontTextureTemp = new BitmapTextureAtlas(this.getTextureManager(), 256, 256,
 					TextureOptions.BILINEAR);
-			this.mPersonFont = FontFactory.createFromAsset(this.getFontManager(), textFontTextureTemp, this.getAssets(),
+			this.mHuawen52Font = FontFactory.createFromAsset(this.getFontManager(), textFontTextureTemp, this.getAssets(),
 					"huawen.ttf", 52, true, Color.WHITE);
-			this.mPersonFont.load();
+			this.mHuawen52Font.load();
 						
 						
 			
@@ -252,21 +254,23 @@ public class GameView extends SimpleBaseGameActivity {
 
 		Control.initialColorWays();
 		Control.progressCnt = 0;
-		
 		Bundle bundle = this.getIntent().getExtras();
-		// 
-		
+
 		String Roomid = bundle.getString("roomid");
 		String RoomStyle = bundle.getString("roomstyle");
 		String UserSerial = bundle.getString("userserial");
-		
-		Log.e("Roomid", Roomid);
-		Log.e("RoomStyle", RoomStyle);
-		Log.e("UserSerial", UserSerial);
-		
-		roomNum = Integer.parseInt(Roomid);
-		Control.playerNum = Integer.parseInt(RoomStyle);
-		localGameColor = Integer.parseInt(UserSerial);
+		Boolean getIsReplay = bundle.getBoolean("isreplay");
+		if(Roomid != null && RoomStyle != null && UserSerial != null && getIsReplay != null){
+			Log.e("Roomid", Roomid);
+			Log.e("RoomStyle", RoomStyle);
+			Log.e("UserSerial", UserSerial);
+			Log.e("isReplay", Boolean.toString(getIsReplay));
+			
+			roomNum = Integer.parseInt(Roomid);
+			Control.playerNum = Integer.parseInt(RoomStyle);
+			localGameColor = Integer.parseInt(UserSerial);
+			isReplay = getIsReplay.booleanValue();
+		}
 		/*
 		 * appUtil = (ApplicationUtil) GameView.this.getApplication(); try {
 		 * appUtil.init(); Socket socket = appUtil.getSocket(); dos =
@@ -281,6 +285,8 @@ public class GameView extends SimpleBaseGameActivity {
 			public void run() {
 				try {
 					appUtil = (ApplicationUtil) GameView.this.getApplication();
+					// Release Version comment this.
+					// appUtil.init();
 					Socket socket = appUtil.getSocket();
 					dos = appUtil.getDos();
 					dis = appUtil.getDis();
@@ -321,26 +327,57 @@ public class GameView extends SimpleBaseGameActivity {
 		scene.attachChild(myDice);
 		scene.registerTouchArea(myDice);
 
-		final Text textTitle = new Text(-559,124, this.mTitleFont, "Player List", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(textTitle);
 		
-		Font colorFont=null;
+		
+		final Text colorText = new Text(-500, 0, mLCD72Font, "R - Dice", this.getVertexBufferObjectManager());
+		scene.attachChild(colorText);
+
+		final Text cheatText = new Text(830, 510, mLCD50Font, "N=" + Control.getDiceNum(),
+				getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
+				if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
+					Log.i("tmpText", "ACTION_UP " + Control.getDiceNum());
+					
+					int tmp = Control.getDiceNum() + 1;
+					if (tmp == 7)
+						tmp = 1;
+					Control.setDiceNum(tmp);
+
+					// this.setText("NUM=" + tmp);
+					Log.i("tmpText", "setDiceNum " + tmp);
+				}
+				return true;
+			}
+		};
+		scene.attachChild(cheatText);
+		scene.registerTouchArea(cheatText);
+
+
+		timeCount = new Text(200, -60, this.mLCD50Font, "Time Count: 15", this.getVertexBufferObjectManager());
+		timeCount.setScale(1.1f);
+		timeLast = 15;
+		scene.attachChild(timeCount);
+		
+		
+		org.andengine.util.color.Color color=null;
 		String colorString=null;
 		switch (localGameColor) {
 		case 1:
-			colorFont=mRedFont;
+			color=org.andengine.util.color.Color.RED;
 			colorString="RED";
 			break;
 		case 2:
-			colorFont=mYellowFont;
+			color=org.andengine.util.color.Color.YELLOW;
 			colorString="YELLOW";
 			break;
 		case 3:
-			colorFont=mBlueFont;
+			color=org.andengine.util.color.Color.BLUE;
 			colorString="BLUE";
 			break;
 		case 4:
-			colorFont=mGreenFont;
+			color=org.andengine.util.color.Color.GREEN;
 			colorString="GREEN";
 			break;
 
@@ -348,29 +385,26 @@ public class GameView extends SimpleBaseGameActivity {
 			break;
 		}
 		
-		final Text localColor = new Text(-550,80, colorFont, "I am "+ colorString, 18, this.getVertexBufferObjectManager());
+		final Text localColor = new Text(-500,80, mHuawen52Font, "MY COLOR", 18, this.getVertexBufferObjectManager());
+		localColor.setColor(color);
 		scene.attachChild(localColor);
+
+		final Text textTitle = new Text(-559,200, this.mHuawen80Font, "Message List:", 18, this.getVertexBufferObjectManager());
+		scene.attachChild(textTitle);
 		
-		final Text personOne = new Text(-573,272, this.mPersonFont,   "Red:   ", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(personOne);
+		msgQueue = new ArrayList<String>();
+		msgQueue.add("Game Beings! "+Control.playerNum+" players.");
+		//msgListText
+		String msgString = "";
+		for (int i=0;i!=msgQueue.size();++i) {
+			
+			msgString+=(msgQueue.get(i)+"\n");
+		}
 		
-		final Text personTwo = new Text(-573,380, this.mPersonFont,   "Yellow:", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(personTwo);
+		Log.i("msgListText", msgString);
 		
-		final Text personThree = new Text(-573,488, this.mPersonFont, "Blue:  ", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(personThree);
-		final Text personFour = new Text(-573,596, this.mPersonFont,  "Green: ", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(personFour);
-		
-		final Text stateOne = new Text(-380,272, this.mPersonFont, "Wait", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(stateOne);
-		final Text stateTwo = new Text(-380,380, this.mPersonFont, "Wait", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(stateTwo);
-		final Text stateThree = new Text(-380,488, this.mPersonFont, "Wait", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(stateThree);
-		final Text stateFour = new Text(-380,596, this.mPersonFont, "Wait", 18, this.getVertexBufferObjectManager());
-		scene.attachChild(stateFour);
-		
+		msgListText  = new Text(-565,272, this.mHuawen52Font,  msgString, 5000, this.getVertexBufferObjectManager());
+		scene.attachChild(msgListText);	
 		
 		
 		redPlaneSprite = new PlaneSprite[4];
@@ -406,37 +440,6 @@ public class GameView extends SimpleBaseGameActivity {
 		}
 
 		// texts for testing
-		final Text colorText = new Text(-550, 30, mScoreFont, "R - Dice", this.getVertexBufferObjectManager());
-		scene.attachChild(colorText);
-
-		final Text cheatText = new Text(830, 520, mScoreFont, "N=" + Control.getDiceNum(),
-				getVertexBufferObjectManager()) {
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
-				if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_UP) {
-					Log.i("tmpText", "ACTION_UP " + Control.getDiceNum());
-					
-					int tmp = Control.getDiceNum() + 1;
-					if (tmp == 7)
-						tmp = 1;
-					Control.setDiceNum(tmp);
-
-					// this.setText("NUM=" + tmp);
-					Log.i("tmpText", "setDiceNum " + tmp);
-				}
-				return true;
-			}
-		};
-		scene.attachChild(cheatText);
-		scene.registerTouchArea(cheatText);
-
-
-		final Text timeCount = new Text(280, -60, this.mScoreFont, "Time Count: 0", 20, this.getVertexBufferObjectManager());
-		timeCount.setScale(1.5f);
-		timeLast = 15;
-		timeCount.setText("Time Left: "+ timeLast);
-		scene.attachChild(timeCount);
 		
 
 		myTimer = new TimerHandler(0.1f, true, new ITimerCallback() {
@@ -465,6 +468,8 @@ public class GameView extends SimpleBaseGameActivity {
 					string += " - Move";
 				}
 			
+				
+				
 				colorText.setText(string);
 				cheatText.setText("N=" + Control.getDiceNum());
 			}
@@ -479,7 +484,56 @@ public class GameView extends SimpleBaseGameActivity {
 		scene.setTouchAreaBindingOnActionDownEnabled(true);
 
 		
+		prepareWholeLogic();
 		
+		if(isReplay){
+			ReadStr.init();
+		}
+
+		WriteStr.init();
+		
+		updateMsgList();
+		//mainHandler.sendEmptyMessage(2);
+		Control.setDiceTurn();
+		Control.complete = true;
+		return scene;
+	}
+
+	
+	
+	public static void updateMsgList() {
+		
+		Log.i("updateMsgList", "updateMsgList updateMsgList");
+		
+		int begin=0;
+		if(msgQueue.size() > 5)
+			begin = msgQueue.size()-5;
+		
+		String msgString = "";
+		for (int i=begin; i!=msgQueue.size(); ++i) {
+			//Log.i("updateMsgList", i+"  "+msgQueue.get(i) );
+			msgString+=(msgQueue.get(i)+"\n");
+		}
+		
+		//Log.i("updateMsgList", "1");
+		msgListText.setText(msgString);
+		//Log.i("updateMsgList", "2");
+		//Log.i("msgListText", msgString);
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private void prepareWholeLogic() {
+		// TODO Auto-generated method stub
+
 		
 		mainHandler = new Handler(Looper.getMainLooper()) {
 			public void handleMessage(Message msg) {
@@ -588,17 +642,34 @@ public class GameView extends SimpleBaseGameActivity {
 					
 					Control.complete = false;
 					
-					if(Control.getColorTurn() != localGameColor){
-						
-						Log.i( "myThread","sendEmptyMessage(3333)");
+					if(isReplay)
+					{
+						Log.i("isReplay", "sleep");
+
+						try {
+							Thread.sleep(1500);
+
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						readLineMsgFromFile();
+					}
+					
+					else if(Control.getColorTurn() != localGameColor){
+
+						Log.i("myThread", "sendEmptyMessage(3333)");
 						mainHandler.sendEmptyMessage(3);
-						
+
 						getMsgThread = new GetThread(appUtil, mainHandler);
 						getMsgThread.start();
-						
+
 						try {
-							Thread.sleep(2000);
+							Thread.sleep(3000);
+							
 							myDice.stopAnimation(0);
+							
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -620,28 +691,30 @@ public class GameView extends SimpleBaseGameActivity {
 		myThread.start();
 		
 		
-		
-		
-		
-		
-		//mainHandler.sendEmptyMessage(2);
-		Control.setDiceTurn();
-		Control.complete = true;
-		return scene;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	protected void readLineMsgFromFile() {
+		// TODO Auto-generated method stub
+		
+		String line = ReadStr.readALine();
+
+		if(line == null)
+		{
+			Control.gameOver=true;
+			return ;
+		}
+		
+		String[] row = line.split(";");
+		
+		Message msg = new Message();
+		msg.what = 10;
+		MsgInfo tempMsg = new MsgInfo(Integer.parseInt(row[0]),Integer.parseInt(row[1]),Integer.parseInt(row[2]),Integer.parseInt(row[3]));
+		msg.obj = tempMsg;
+		
+		mainHandler.sendMessage(msg);
+		
+	}
+
 	protected void doGameLogic(Message msg) {
 		// TODO Auto-generated method stub
 		Log.i("GameView", "doGameLogic");
@@ -716,9 +789,16 @@ public class GameView extends SimpleBaseGameActivity {
 					Log.i("send empty", "pgs = "+Control.progressCnt+" "+localGameColor+" "+0+" "+diceNum);
 					
 					sendMsgThread = new SendThread(roomNum,Control.progressCnt,
-							localGameColor,tempMsg.seqNum,diceNum,appUtil);sendMsgThread.start();
-
-							
+							localGameColor,tempMsg.seqNum,diceNum,appUtil);
+					sendMsgThread.start();
+					
+					if(!isReplay)
+					WriteStr.writeALine(Control.progressCnt,
+							localGameColor,tempMsg.seqNum,diceNum);
+					
+					msgQueue.add(colorString[localGameColor]+" "+diceNum+", can't go");
+					updateMsgList();
+					
 					Control.goNextColorTurn();
 					Control.setDiceTurn();
 					Control.progressCnt += 1;
@@ -765,6 +845,12 @@ public class GameView extends SimpleBaseGameActivity {
 							localGameColor,tempMsg.seqNum,diceNum,appUtil);
 					sendMsgThread.start();
 					
+					if(!isReplay)
+					WriteStr.writeALine(Control.progressCnt,
+							localGameColor,tempMsg.seqNum,diceNum);
+					msgQueue.add(colorString[localGameColor]+" "+diceNum+", p"+tempMsg.seqNum+" set off!!");
+					updateMsgList();
+					
 					Control.progressCnt += 1;
 					
 					
@@ -783,6 +869,12 @@ public class GameView extends SimpleBaseGameActivity {
 				sendMsgThread = new SendThread(roomNum,Control.progressCnt,
 						localGameColor,tempMsg.seqNum,diceNum,appUtil);
 				sendMsgThread.start();
+				
+				if(!isReplay)
+				WriteStr.writeALine(Control.progressCnt,
+						localGameColor,tempMsg.seqNum,diceNum);
+				msgQueue.add(colorString[localGameColor]+" "+diceNum+", p"+tempMsg.seqNum+" move.");
+				updateMsgList();
 				
 				Control.progressCnt += 1;
 			}
@@ -861,6 +953,14 @@ public class GameView extends SimpleBaseGameActivity {
 				
 				// inform other that this this guy (me) is skipped
 				// TODO
+				if(!isReplay)
+				WriteStr.writeALine(tempMsg.countNum,
+						tempMsg.colorNum,tempMsg.seqNum,msgLen);
+				
+				msgQueue.add(colorString[tempMsg.colorNum]+" "+msgLen+", can't go");
+				updateMsgList();
+				
+				
 				Control.progressCnt++;
 				return;
 			}
@@ -912,6 +1012,14 @@ public class GameView extends SimpleBaseGameActivity {
 				
 				planeSprite.moveByNum(1);	// move 1 step 
 				
+				if(!isReplay)
+				WriteStr.writeALine(tempMsg.countNum,
+						tempMsg.colorNum,tempMsg.seqNum,diceNum);
+				
+				msgQueue.add(colorString[tempMsg.colorNum]+" "+diceNum+", p"+tempMsg.seqNum+" set off!!");
+				updateMsgList();
+				
+				
 				Control.progressCnt++;
 				
 			} else { 	// touch a plane at start point, but the dice number
@@ -923,6 +1031,13 @@ public class GameView extends SimpleBaseGameActivity {
 			planeSprite.moveByNum(diceNum);
 			Control.progressCnt++;
 			Log.i("goNextColorTurn", "fly 2");
+			
+			if(!isReplay)
+			WriteStr.writeALine(tempMsg.countNum,
+					tempMsg.colorNum,tempMsg.seqNum,diceNum);
+			
+			msgQueue.add(colorString[localGameColor]+" "+diceNum+", p"+tempMsg.seqNum+" move.");
+			updateMsgList();
 			
 		
 		}
@@ -957,6 +1072,8 @@ public class GameView extends SimpleBaseGameActivity {
 					Log.i("redPlaneSprite", "back "+it.seqNum);
 					
 					it.moveBackHome();
+
+				//	msgQueue.add(colorString[color]+" plane beat the "+"RED"+" plane back to MOM!!!");
 					Control.redOnWayCnt--;
 				}
 			}
@@ -970,6 +1087,7 @@ public class GameView extends SimpleBaseGameActivity {
 					Log.i("yellowPlaneSprite", "back "+it.seqNum);
 					
 					it.moveBackHome();
+				//	msgQueue.add(colorString[color]+" plane beat the "+"YELLOW"+" plane back to MOM!!!");
 					Control.yellowOnWayCnt--;
 				}
 			}
@@ -983,6 +1101,7 @@ public class GameView extends SimpleBaseGameActivity {
 					Log.i("bluePlaneSprite", "back "+it.seqNum);
 					
 					it.moveBackHome();
+				//	msgQueue.add(colorString[color]+" plane beat the "+"BLUE"+" plane back to MOM!!!");
 					Control.blueOnWayCnt--;
 				}
 			}
@@ -996,6 +1115,7 @@ public class GameView extends SimpleBaseGameActivity {
 					Log.i("greenPlaneSprite", "back "+it.seqNum);
 					
 					it.moveBackHome();
+				//	msgQueue.add(colorString[color]+" plane beat the "+"GREEN"+" plane back to MOM!!!");
 					Control.greenOnWayCnt--;
 				}
 			}
